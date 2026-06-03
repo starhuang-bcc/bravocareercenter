@@ -4,7 +4,7 @@
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/about-history-consultation-iDvDiVZx5V7e3gvj7mPFU6.webp";
+const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/about-history-consultation-clean-6hA9xrbnYqAoSDkCWZxzQc.webp";
 
 const milestones = [
   { num: "10+", label: "年深耕經驗" },
