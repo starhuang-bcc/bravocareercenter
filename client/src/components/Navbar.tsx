@@ -11,6 +11,7 @@ const navItems = [
   { label: "核心服務", href: "#services" },
   { label: "服務流程", href: "#process" },
   { label: "品牌故事", href: "#about" },
+  { label: "文章故事", href: "https://bravocareercenter.medium.com", external: true },
   { label: "聯絡我們", href: "#contact" },
 ];
 
@@ -61,20 +62,37 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8">
-          {navItems.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => handleNavClick(item.href)}
-              className="font-sans-tc text-sm font-medium transition-colors duration-200 hover:text-amber-600 relative group"
-              style={{ color: scrolled ? "oklch(0.28 0.08 250)" : "oklch(0.28 0.08 250)" }}
-            >
-              {item.label}
-              <span
-                className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full rounded-full"
-                style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
-              />
-            </button>
-          ))}
+          {navItems.map((item) =>
+            item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans-tc text-sm font-medium transition-colors duration-200 hover:text-amber-600 relative group"
+                style={{ color: scrolled ? "oklch(0.28 0.08 250)" : "oklch(0.28 0.08 250)" }}
+              >
+                {item.label}
+                <span
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full rounded-full"
+                  style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
+                />
+              </a>
+            ) : (
+              <button
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className="font-sans-tc text-sm font-medium transition-colors duration-200 hover:text-amber-600 relative group"
+                style={{ color: scrolled ? "oklch(0.28 0.08 250)" : "oklch(0.28 0.08 250)" }}
+              >
+                {item.label}
+                <span
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full rounded-full"
+                  style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
+                />
+              </button>
+            )
+          )}
           <button
             onClick={() => handleNavClick("#contact")}
             className="font-sans-tc text-sm font-semibold px-5 py-2 rounded-full text-white transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -95,30 +113,43 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-100 shadow-lg">
-          <nav className="container py-4 flex flex-col gap-1">
-            {navItems.map((item) => (
+        {/* Mobile Menu */}
+        {mobileOpen && (
+          <div className="lg:hidden bg-white border-t border-slate-100 shadow-lg">
+            <nav className="container py-4 flex flex-col gap-1">
+              {navItems.map((item) =>
+                item.external ? (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-sans-tc text-sm font-medium py-3 px-2 text-left rounded-lg transition-colors hover:bg-slate-50"
+                    style={{ color: "oklch(0.28 0.08 250)" }}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <button
+                    key={item.href}
+                    onClick={() => handleNavClick(item.href)}
+                    className="font-sans-tc text-sm font-medium py-3 px-2 text-left rounded-lg transition-colors hover:bg-slate-50"
+                    style={{ color: "oklch(0.28 0.08 250)" }}
+                  >
+                    {item.label}
+                  </button>
+                )
+              )}
               <button
-                key={item.href}
-                onClick={() => handleNavClick(item.href)}
-                className="font-sans-tc text-sm font-medium py-3 px-2 text-left rounded-lg transition-colors hover:bg-slate-50"
-                style={{ color: "oklch(0.28 0.08 250)" }}
+                onClick={() => handleNavClick("#contact")}
+                className="mt-2 font-sans-tc text-sm font-semibold py-3 rounded-full text-white text-center"
+                style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
               >
-                {item.label}
+                立即諮詢
               </button>
-            ))}
-            <button
-              onClick={() => handleNavClick("#contact")}
-              className="mt-2 font-sans-tc text-sm font-semibold py-3 rounded-full text-white text-center"
-              style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
-            >
-              立即諮詢
-            </button>
-          </nav>
-        </div>
-      )}
+            </nav>
+          </div>
+        )}
     </header>
   );
 }
