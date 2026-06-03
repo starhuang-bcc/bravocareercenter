@@ -59,10 +59,10 @@ export default function Navbar() {
               策夢人
             </span>
             <span
-              className="font-lato text-xs tracking-widest uppercase leading-none"
-              style={{ color: "oklch(0.62 0.15 45)" }}
+              className="font-lato text-xs tracking-widest leading-none"
+              style={{ color: "oklch(0.62 0.15 45)", fontSize: "0.65rem" }}
             >
-              Bravo
+              BRAVO CAREER CENTER
             </span>
           </div>
         </a>

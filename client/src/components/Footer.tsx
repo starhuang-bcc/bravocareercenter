@@ -75,10 +75,10 @@ export default function Footer() {
                     策夢人
                   </p>
                   <p
-                    className="font-lato text-xs tracking-widest uppercase mt-0.5"
-                    style={{ color: "oklch(0.75 0.12 45)" }}
+                    className="font-lato tracking-widest mt-0.5"
+                    style={{ color: "oklch(0.75 0.12 45)", fontSize: "0.65rem" }}
                   >
-                    Bravo
+                    BRAVO CAREER CENTER
                   </p>
                 </div>
               </div>
