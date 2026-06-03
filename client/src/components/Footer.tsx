@@ -62,18 +62,25 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
             {/* Column 1: Logo + About */}
             <div className="lg:col-span-1">
-              <div className="mb-4">
-                <p
-                  className="font-serif-tc font-bold text-xl text-white leading-tight"
-                >
-                  築夢人
-                </p>
-                <p
-                  className="font-lato text-xs tracking-widest uppercase mt-0.5"
-                  style={{ color: "oklch(0.75 0.12 45)" }}
-                >
-                  Bravo Career Center
-                </p>
+              <div className="mb-4 flex items-center gap-2">
+                <img
+                  src="/manus-storage/bravo-logo_76062bf7.webp"
+                  alt="Bravo Career Center Logo"
+                  className="h-12 w-auto"
+                />
+                <div>
+                  <p
+                    className="font-serif-tc font-bold text-lg text-white leading-tight"
+                  >
+                    策夢人
+                  </p>
+                  <p
+                    className="font-lato text-xs tracking-widest uppercase mt-0.5"
+                    style={{ color: "oklch(0.75 0.12 45)" }}
+                  >
+                    Bravo
+                  </p>
+                </div>
               </div>
               <p
                 className="font-sans-tc text-xs leading-relaxed"

@@ -43,21 +43,28 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#"
-          className="flex flex-col leading-tight"
+          className="flex items-center gap-2 leading-tight"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
         >
-          <span
-            className="font-serif-tc font-bold text-lg lg:text-xl"
-            style={{ color: "oklch(0.28 0.08 250)" }}
-          >
-            築夢人
-          </span>
-          <span
-            className="font-lato text-xs tracking-widest uppercase"
-            style={{ color: "oklch(0.62 0.15 45)" }}
-          >
-            Bravo Career Center
-          </span>
+          <img
+            src="/manus-storage/bravo-logo_76062bf7.webp"
+            alt="Bravo Career Center Logo"
+            className="h-10 lg:h-12 w-auto"
+          />
+          <div className="hidden sm:flex flex-col">
+            <span
+              className="font-serif-tc font-bold text-sm lg:text-base"
+              style={{ color: "oklch(0.28 0.08 250)" }}
+            >
+              策夢人
+            </span>
+            <span
+              className="font-lato text-xs tracking-widest uppercase leading-none"
+              style={{ color: "oklch(0.62 0.15 45)" }}
+            >
+              Bravo
+            </span>
+          </div>
         </a>
 
         {/* Desktop Nav */}

@@ -5,8 +5,8 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
 
-const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-ecZ2Mrx9s5YmqYe5p9vECs.webp";
-const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-hgs4bMgC8KP8wpWZKhqQUt.webp";
+const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-v2-32QZ7nXCqkiz73JhFb4ycQ.webp";
+const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-v2-KstwgViVHabESqebLQDbg9.webp";
 
 const jobPositions = [
   "軟韌體開發 RD",
@@ -121,9 +121,9 @@ export default function ServicesSection() {
             />
             <img
               src={HEADHUNTING_IMG}
-              alt="專業獵才服務"
+              alt="专業獵才服務"
               className="relative z-10 w-full rounded-2xl object-cover shadow-lg"
-              style={{ aspectRatio: "4/3" }}
+              style={{ aspectRatio: "4/3", objectPosition: "center" }}
             />
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function ServicesSection() {
               src={OUTSOURCING_IMG}
               alt="人才外包服務"
               className="relative z-10 w-full rounded-2xl object-cover shadow-lg"
-              style={{ aspectRatio: "4/3" }}
+              style={{ aspectRatio: "4/3", objectPosition: "center" }}
             />
           </div>
 
