@@ -4,12 +4,12 @@
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/about-history-asian-AkJ2oL4gLXAmqWVqs6JaqK.webp";
+const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/about-history-consultation-iDvDiVZx5V7e3gvj7mPFU6.webp";
 
 const milestones = [
   { num: "10+", label: "年深耕經驗" },
   { num: "100+", label: "諮詢晤談小時" },
-  { num: "10000+", label: "Linkedin 人" },
+  { num: "10000+", label: "Linkedin人才庫" },
 ];
 
 export default function AboutSection() {

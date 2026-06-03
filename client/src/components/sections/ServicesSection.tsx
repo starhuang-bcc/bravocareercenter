@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
 
 const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
-const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-sincere-bcPKCcY5cLT2sPRz6CpQzA.webp";
+const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-talent-management-2CCKUJrsYEcvuUH7iJMufz.webp";
 
 const jobPositions = [
   "軟韌體開發 RD",
