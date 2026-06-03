@@ -5,7 +5,9 @@
  */
 import { useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Send, MapPin, Phone, Mail } from "lucide-react";
+import { Send, MapPin, Phone, Mail, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const CONTACT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/contact-bg-4YtG742zfRZUz29dduaPLP.webp";
 
@@ -45,9 +47,36 @@ export default function ContactSection() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const submitMutation = trpc.contact.submit.useMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const result = await submitMutation.mutateAsync({
+        category,
+        lastName: form.lastName,
+        firstName: form.firstName,
+        email: form.email,
+        phone: form.phone,
+        subject: form.subject,
+        message: form.message,
+      });
+
+      if (result.success) {
+        setSubmitted(true);
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("訊息發送失敗，請稍後重試。");
+      console.error("Form submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -392,11 +421,21 @@ export default function ContactSection() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="font-sans-tc font-semibold text-sm py-3 rounded-xl text-white flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 active:scale-95"
+                  disabled={isSubmitting}
+                  className="font-sans-tc font-semibold text-sm py-3 rounded-xl text-white flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ backgroundColor: "oklch(0.28 0.08 250)" }}
                 >
-                  <Send size={16} />
-                  送出訊息
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      發送中...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      送出訊息
+                    </>
+                  )}
                 </button>
               </form>
             )}
