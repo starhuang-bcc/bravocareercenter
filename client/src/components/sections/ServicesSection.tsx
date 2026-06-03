@@ -9,10 +9,15 @@ const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/31051966372660864
 const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-hgs4bMgC8KP8wpWZKhqQUt.webp";
 
 const jobPositions = [
-  "軟體開發 RD", "韌體開發 RD", "演算法 RD", "資料科學家",
-  "Solution Architect", "系統架構師", "AI/ML 工程師", "半導體製程工程師",
-  "IC 設計工程師", "產品經理 PM", "專案管理師", "業務開發主管",
-  "行銷策略主管", "財務長 CFO", "人資總監 CHRO", "技術長 CTO",
+  "軟韌體開發 RD",
+  "硬體研發 RD",
+  "類比/數位 IC 設計 RD",
+  "封裝 RD",
+  "資料工程/分析師",
+  "測試品保 RD",
+  "製程/製程整合 RD",
+  "Business Development Manager",
+  "Product / Project Manager",
 ];
 
 const outsourcingFeatures = [
@@ -123,28 +128,7 @@ export default function ServicesSection() {
           </div>
         </div>
 
-        {/* Marquee */}
-        <div
-          className="overflow-hidden py-4 mb-20 lg:mb-28 rounded-xl"
-          style={{ backgroundColor: "oklch(0.97 0.01 250)", border: "1px solid oklch(0.90 0.02 250)" }}
-        >
-          <div className="flex animate-marquee whitespace-nowrap">
-            {[...jobPositions, ...jobPositions].map((job, i) => (
-              <span
-                key={i}
-                className="font-sans-tc text-sm font-medium mx-6 px-4 py-1.5 rounded-full"
-                style={{
-                  color: "oklch(0.28 0.08 250)",
-                  backgroundColor: "white",
-                  border: "1px solid oklch(0.90 0.02 250)",
-                  flexShrink: 0,
-                }}
-              >
-                {job}
-              </span>
-            ))}
-          </div>
-        </div>
+
 
         {/* Service 2: 人才外包 */}
         <div

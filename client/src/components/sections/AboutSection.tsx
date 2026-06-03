@@ -8,8 +8,8 @@ const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn
 
 const milestones = [
   { num: "10+", label: "年深耕經驗" },
-  { num: "500+", label: "成功媒合案例" },
-  { num: "100+", label: "合作企業夥伴" },
+  { num: "100+", label: "諮詢晤談小時" },
+  { num: "10000+", label: "Linkedin 人" },
 ];
 
 export default function AboutSection() {
@@ -102,7 +102,7 @@ export default function AboutSection() {
               {milestones.map((m) => (
                 <div
                   key={m.label}
-                  className="text-center py-4 rounded-xl"
+                  className="fade-up stagger-5 text-center py-4 rounded-xl"
                   style={{
                     backgroundColor: "oklch(0.96 0.01 250)",
                     border: "1px solid oklch(0.90 0.02 250)",
