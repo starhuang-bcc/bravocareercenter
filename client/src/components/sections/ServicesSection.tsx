@@ -5,7 +5,7 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
 
-const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-v2-32QZ7nXCqkiz73JhFb4ycQ.webp";
+const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
 const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-outsourcing-v2-KstwgViVHabESqebLQDbg9.webp";
 
 const jobPositions = [
