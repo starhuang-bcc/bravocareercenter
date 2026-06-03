@@ -1,10 +1,14 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
-// Mock notifyOwner
+// Mock notifyOwner and sendEmail
 vi.mock("./_core/notification", () => ({
   notifyOwner: vi.fn(async () => true),
+}));
+
+vi.mock("./_core/emailService", () => ({
+  sendEmail: vi.fn(async () => true),
 }));
 
 type PublicContext = Omit<TrpcContext, "user"> & { user: null };
@@ -21,6 +25,10 @@ function createPublicContext(): PublicContext {
 }
 
 describe("contact.submit", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("successfully submits a contact form with all required fields", async () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);
@@ -110,5 +118,21 @@ describe("contact.submit", () => {
 
       expect(result.success).toBe(true);
     }
+  });
+
+  it("calls sendEmail with company email address", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.contact.submit({
+      category: "1",
+      lastName: "王",
+      firstName: "小明",
+      email: "test@example.com",
+      message: "測試郵件發送",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toContain("訊息已送出");
   });
 });

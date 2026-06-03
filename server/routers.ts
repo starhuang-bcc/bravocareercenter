@@ -4,6 +4,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { notifyOwner } from "./_core/notification";
+import { sendEmail } from "./_core/emailService";
+import { ENV } from "./_core/env";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -56,10 +58,22 @@ export const appRouter = router({
 ${input.message}
         `;
 
-        const success = await notifyOwner({
+        // Send email to company email address
+        const emailSuccess = ENV.companyEmail
+          ? await sendEmail({
+              to: ENV.companyEmail,
+              subject: `新聯絡表單提交 - ${categoryName}`,
+              content,
+            })
+          : false;
+
+        // Also notify owner via platform notification
+        const notifySuccess = await notifyOwner({
           title: `新聯絡表單提交 - ${categoryName}`,
           content,
         });
+
+        const success = emailSuccess || notifySuccess;
 
         return {
           success,
