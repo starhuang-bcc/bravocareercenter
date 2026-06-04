@@ -109,6 +109,9 @@ ${input.message}
       .input(
         z.object({
           status: z.enum(["new", "read", "replied", "archived"]).optional(),
+          keyword: z.string().optional(),
+          startDate: z.date().optional(),
+          endDate: z.date().optional(),
           limit: z.number().int().positive().max(100).default(20),
           offset: z.number().int().nonnegative().default(0),
         })
@@ -121,6 +124,9 @@ ${input.message}
 
         const submissions = await getContactSubmissions({
           status: input.status,
+          keyword: input.keyword,
+          startDate: input.startDate,
+          endDate: input.endDate,
           limit: input.limit,
           offset: input.offset,
         });

@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, or, and, like, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, contactSubmissions, InsertContactSubmission, ContactSubmission } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -120,10 +120,13 @@ export async function createContactSubmission(
 }
 
 /**
- * Get all contact submissions with optional filtering
+ * Get all contact submissions with optional filtering, searching, and date range
  */
 export async function getContactSubmissions(filters?: {
   status?: string;
+  keyword?: string;
+  startDate?: Date;
+  endDate?: Date;
   limit?: number;
   offset?: number;
 }): Promise<ContactSubmission[]> {
@@ -135,9 +138,41 @@ export async function getContactSubmissions(filters?: {
 
   try {
     let query: any = db.select().from(contactSubmissions);
+    const whereConditions: any[] = [];
 
+    // Status filter
     if (filters?.status && ["new", "read", "replied", "archived"].includes(filters.status)) {
-      query = query.where(eq(contactSubmissions.status, filters.status as any));
+      whereConditions.push(eq(contactSubmissions.status, filters.status as any));
+    }
+
+    // Keyword search (search in lastName, firstName, email, subject, message)
+    if (filters?.keyword && filters.keyword.trim()) {
+      const keyword = `%${filters.keyword}%`;
+      whereConditions.push(
+        or(
+          like(contactSubmissions.lastName, keyword),
+          like(contactSubmissions.firstName, keyword),
+          like(contactSubmissions.email, keyword),
+          like(contactSubmissions.subject, keyword),
+          like(contactSubmissions.message, keyword)
+        )
+      );
+    }
+
+    // Date range filter
+    if (filters?.startDate) {
+      whereConditions.push(gte(contactSubmissions.createdAt, filters.startDate));
+    }
+    if (filters?.endDate) {
+      // Add 1 day to endDate to include the entire end date
+      const endOfDay = new Date(filters.endDate);
+      endOfDay.setDate(endOfDay.getDate() + 1);
+      whereConditions.push(lte(contactSubmissions.createdAt, endOfDay));
+    }
+
+    // Apply all where conditions
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions));
     }
 
     query = query.orderBy(desc(contactSubmissions.createdAt));

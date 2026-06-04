@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { Search, X } from "lucide-react";
 
 const categoryLabels: Record<string, string> = {
   "1": "求才企業",
@@ -32,6 +34,9 @@ const statusColors: Record<string, string> = {
 export default function AdminContactsPage() {
   const { user } = useAuth();
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
+  const [keyword, setKeyword] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [selectedSubmission, setSelectedSubmission] = useState<number | null>(null);
 
   // Check if user is admin
@@ -47,9 +52,12 @@ export default function AdminContactsPage() {
   // Fetch stats
   const { data: stats, isLoading: statsLoading } = trpc.contact.getStats.useQuery();
 
-  // Fetch submissions list
+  // Fetch submissions list with filters
   const { data: submissions, isLoading: submissionsLoading, refetch } = trpc.contact.list.useQuery({
     status: selectedStatus as any,
+    keyword: keyword || undefined,
+    startDate: startDate ? new Date(startDate) : undefined,
+    endDate: endDate ? new Date(endDate) : undefined,
     limit: 50,
     offset: 0,
   });
@@ -74,6 +82,15 @@ export default function AdminContactsPage() {
       status: newStatus as any,
     });
   };
+
+  const handleClearFilters = () => {
+    setSelectedStatus(undefined);
+    setKeyword("");
+    setStartDate("");
+    setEndDate("");
+  };
+
+  const hasActiveFilters = selectedStatus || keyword || startDate || endDate;
 
   return (
     <div className="container py-8">
@@ -108,21 +125,79 @@ export default function AdminContactsPage() {
         </div>
       )}
 
-      {/* Filter */}
-      <div className="mb-6 flex gap-4">
-        <Select value={selectedStatus || ""} onValueChange={(v) => setSelectedStatus(v || undefined)}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="篩選狀態" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">全部狀態</SelectItem>
-            <SelectItem value="new">新訊息</SelectItem>
-            <SelectItem value="read">已閱讀</SelectItem>
-            <SelectItem value="replied">已回覆</SelectItem>
-            <SelectItem value="archived">已歸檔</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Filters */}
+      <Card className="p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4">篩選條件</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Status Filter */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">狀態</label>
+            <Select value={selectedStatus || ""} onValueChange={(v) => setSelectedStatus(v || undefined)}>
+              <SelectTrigger>
+                <SelectValue placeholder="全部狀態" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">全部狀態</SelectItem>
+                <SelectItem value="new">新訊息</SelectItem>
+                <SelectItem value="read">已閱讀</SelectItem>
+                <SelectItem value="replied">已回覆</SelectItem>
+                <SelectItem value="archived">已歸檔</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Keyword Search */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">關鍵字搜尋</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="姓名、Email、主旨..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          {/* Start Date */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">開始日期</label>
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+
+          {/* End Date */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">結束日期</label>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+
+          {/* Clear Button */}
+          <div className="flex items-end">
+            {hasActiveFilters ? (
+              <Button
+                variant="outline"
+                onClick={handleClearFilters}
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                清除篩選
+              </Button>
+            ) : (
+              <div className="text-sm text-gray-500">無活動篩選</div>
+            )}
+          </div>
+        </div>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Submissions List */}
