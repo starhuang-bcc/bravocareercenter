@@ -117,7 +117,7 @@ export default function PrivacyModal({ open, onClose }: PrivacyModalProps) {
             className="w-full font-sans-tc font-semibold text-sm py-2.5 rounded-xl text-white transition-all duration-200 hover:opacity-90"
             style={{ backgroundColor: "oklch(0.28 0.08 250)" }}
           >
-            我已閱讀並了解
+            我已閱讀並同意
           </button>
         </div>
       </div>

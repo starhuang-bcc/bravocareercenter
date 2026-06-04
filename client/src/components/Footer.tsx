@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Phone, Mail, ExternalLink, Lock } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import PrivacyModal from "./PrivacyModal";
 
 const talentServiceLinks = [
@@ -55,6 +56,10 @@ export default function Footer() {
 
   const handleAdminClick = () => {
     navigate("/admin/contacts");
+  };
+
+  const handleAdminLogin = () => {
+    window.location.href = getLoginUrl();
   };
 
   return (
@@ -239,20 +244,15 @@ export default function Footer() {
                   <span>後台</span>
                 </button>
               ) : (
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Redirect to login if not authenticated
-                    window.location.href = "/?login=true";
-                  }}
+                <button
+                  onClick={handleAdminLogin}
                   className="font-sans-tc text-xs flex items-center gap-1 transition-colors hover:text-white"
                   style={{ color: "rgba(255,255,255,0.55)" }}
                   title="管理員登入"
                 >
                   <Lock size={12} />
                   <span>管理員登入</span>
-                </a>
+                </button>
               )}
               <button
                 onClick={() => setPrivacyOpen(true)}
