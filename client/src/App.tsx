@@ -6,12 +6,14 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SubmissionsPage from "./pages/SubmissionsPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/admin" component={AdminLoginPage} />
       <Route path="/submissions" component={SubmissionsPage} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,9 +21,24 @@ interface ContactSubmission {
 }
 
 export default function SubmissionsPage() {
+  const [, setLocation] = useLocation();
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  // 檢查登錄狀態
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("adminLoggedIn");
+    if (!isLoggedIn) {
+      setLocation("/admin");
+    }
+  }, [setLocation]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("adminLoginTime");
+    setLocation("/");
+  };
 
   useEffect(() => {
     // 直接從資料庫查詢所有提交
@@ -82,11 +98,20 @@ export default function SubmissionsPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">聯絡表單提交</h1>
-          <p className="text-muted-foreground">
-            共有 {submissions.length} 條提交記錄
-          </p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">聯絡表單提交</h1>
+            <p className="text-muted-foreground">
+              共有 {submissions.length} 條提交記錄
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 rounded-lg font-medium text-white transition-all hover:opacity-90"
+            style={{ backgroundColor: "oklch(0.7 0.2 25)" }}
+          >
+            登出
+          </button>
         </div>
 
         {submissions.length === 0 ? (

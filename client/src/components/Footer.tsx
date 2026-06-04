@@ -44,6 +44,11 @@ const careerLinks = [
     label: "免費生涯測驗",
     href: "https://bravocareercenter.github.io/BCCSurvey/#/",
   },
+  {
+    label: "後台管理",
+    href: "/admin",
+    internal: true,
+  },
 ];
 
 export default function Footer() {
@@ -141,13 +146,13 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target={link.internal ? undefined : "_blank"}
+                      rel={link.internal ? undefined : "noopener noreferrer"}
                       className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"
                       style={{ color: "rgba(255,255,255,0.55)" }}
                     >
                       {link.label}
-                      <ExternalLink size={10} className="flex-shrink-0 opacity-60" />
+                      {!link.internal && <ExternalLink size={10} className="flex-shrink-0 opacity-60" />}
                     </a>
                   </li>
                 ))}
