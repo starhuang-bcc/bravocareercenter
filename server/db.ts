@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, contactSubmissions, InsertContactSubmission, ContactSubmission } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,152 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Create a new contact submission
+ */
+export async function createContactSubmission(
+  submission: InsertContactSubmission
+): Promise<ContactSubmission | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create contact submission: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(contactSubmissions).values(submission);
+    const id = Number((result as any).insertId);
+    if (!id) return null;
+
+    const created = await db
+      .select()
+      .from(contactSubmissions)
+      .where(eq(contactSubmissions.id, id))
+      .limit(1);
+
+    return created.length > 0 ? created[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create contact submission:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get all contact submissions with optional filtering
+ */
+export async function getContactSubmissions(filters?: {
+  status?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<ContactSubmission[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get contact submissions: database not available");
+    return [];
+  }
+
+  try {
+    let query: any = db.select().from(contactSubmissions);
+
+    if (filters?.status && ["new", "read", "replied", "archived"].includes(filters.status)) {
+      query = query.where(eq(contactSubmissions.status, filters.status as any));
+    }
+
+    query = query.orderBy(desc(contactSubmissions.createdAt));
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+    if (filters?.offset) {
+      query = query.offset(filters.offset);
+    }
+
+    return await query;
+  } catch (error) {
+    console.error("[Database] Failed to get contact submissions:", error);
+    return [];
+  }
+}
+
+/**
+ * Get a single contact submission by ID
+ */
+export async function getContactSubmissionById(
+  id: number
+): Promise<ContactSubmission | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get contact submission: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(contactSubmissions)
+      .where(eq(contactSubmissions.id, id))
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to get contact submission:", error);
+    return null;
+  }
+}
+
+/**
+ * Update contact submission status
+ */
+export async function updateContactSubmissionStatus(
+  id: number,
+  status: "new" | "read" | "replied" | "archived"
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update contact submission: database not available");
+    return false;
+  }
+
+  try {
+    await db
+      .update(contactSubmissions)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(contactSubmissions.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update contact submission:", error);
+    return false;
+  }
+}
+
+/**
+ * Get contact submission statistics
+ */
+export async function getContactSubmissionStats(): Promise<{
+  total: number;
+  new: number;
+  read: number;
+  replied: number;
+  archived: number;
+}> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get contact submission stats: database not available");
+    return { total: 0, new: 0, read: 0, replied: 0, archived: 0 };
+  }
+
+  try {
+    const submissions = await db.select().from(contactSubmissions);
+    const stats = {
+      total: submissions.length,
+      new: submissions.filter((s) => s.status === "new").length,
+      read: submissions.filter((s) => s.status === "read").length,
+      replied: submissions.filter((s) => s.status === "replied").length,
+      archived: submissions.filter((s) => s.status === "archived").length,
+    };
+    return stats;
+  } catch (error) {
+    console.error("[Database] Failed to get contact submission stats:", error);
+    return { total: 0, new: 0, read: 0, replied: 0, archived: 0 };
+  }
+}
