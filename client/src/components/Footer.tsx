@@ -44,11 +44,6 @@ const careerLinks = [
     label: "免費生涯測驗",
     href: "https://bravocareercenter.github.io/BCCSurvey/#/",
   },
-  {
-    label: "後台管理",
-    href: "/admin",
-    internal: true,
-  },
 ];
 
 export default function Footer() {
@@ -146,13 +141,13 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      target={link.internal ? undefined : "_blank"}
-                      rel={link.internal ? undefined : "noopener noreferrer"}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"
                       style={{ color: "rgba(255,255,255,0.55)" }}
                     >
                       {link.label}
-                      {!link.internal && <ExternalLink size={10} className="flex-shrink-0 opacity-60" />}
+                      <ExternalLink size={10} className="flex-shrink-0 opacity-60" />
                     </a>
                   </li>
                 ))}
@@ -216,20 +211,29 @@ export default function Footer() {
           />
 
           {/* Bottom */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p
               className="font-sans-tc text-xs"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
               © 2026 築夢人生涯諮詢服務有限公司 All Rights Reserved.
             </p>
-            <button
-              onClick={() => setPrivacyOpen(true)}
-              className="font-sans-tc text-xs transition-colors hover:text-white"
-              style={{ color: "rgba(255,255,255,0.35)" }}
-            >
-              隱私權政策
-            </button>
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => setPrivacyOpen(true)}
+                className="font-sans-tc text-xs transition-colors hover:text-white"
+                style={{ color: "rgba(255,255,255,0.35)" }}
+              >
+                隱私權政策
+              </button>
+              <a
+                href="/admin"
+                className="font-sans-tc text-xs transition-colors hover:text-white font-semibold"
+                style={{ color: "rgba(255,255,255,0.65)" }}
+              >
+                後台管理
+              </a>
+            </div>
           </div>
         </div>
       </footer>

@@ -1,37 +1,43 @@
 /**
  * AdminLoginPage — 後台登錄頁面
- * 簡單的密碼保護頁面，驗證後可訪問 /submissions
+ * 使用後端密碼驗證，驗證後可訪問 /submissions
  */
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Lock } from "lucide-react";
-
-const ADMIN_PASSWORD = "admin6688";
+import { trpc } from "@/lib/trpc";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
+  const verifyPasswordMutation = trpc.contact.verifyPassword.useMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    // 簡單的密碼驗證
-    setTimeout(() => {
-      if (password === ADMIN_PASSWORD) {
+    try {
+      const result = await verifyPasswordMutation.mutateAsync({ password });
+      
+      if (result.success) {
         // 保存登錄狀態到 localStorage
         localStorage.setItem("adminLoggedIn", "true");
         localStorage.setItem("adminLoginTime", Date.now().toString());
+        localStorage.setItem("adminPassword", password);
         setLocation("/submissions");
       } else {
         setError("密碼錯誤，請重試");
         setPassword("");
       }
+    } catch (err) {
+      setError("密碼錯誤，請重試");
+      setPassword("");
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   return (

@@ -1,4 +1,3 @@
-import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
@@ -10,6 +9,11 @@ import {
   getDefaultReplyTemplate,
   getContactSubmissions,
 } from "./db";
+import { getDb } from "./db";
+import { eq } from "drizzle-orm";
+import { contactSubmissions } from "../drizzle/schema";
+
+const ADMIN_PASSWORD = "admin6688";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -18,7 +22,7 @@ export const appRouter = router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      ctx.res.clearCookie("app_session_id", { ...cookieOptions, maxAge: -1 });
       return {
         success: true,
       } as const;
@@ -27,8 +31,74 @@ export const appRouter = router({
 
   contact: router({
     list: publicProcedure
-      .query(async () => {
-        return await getContactSubmissions();
+      .input(
+        z.object({
+          category: z.string().optional(),
+          keyword: z.string().optional(),
+          password: z.string().optional(),
+        })
+      )
+      .query(async ({ input }) => {
+        // Verify password for accessing submissions
+        if (!input.password || input.password !== ADMIN_PASSWORD) {
+          return [];
+        }
+
+        const filters: any = {};
+        
+        // Filter by category if provided
+        if (input.category && input.category !== "all") {
+          // Search by category in the keyword field since category is stored as a string
+          filters.keyword = input.category;
+        }
+        
+        // Add keyword search if provided
+        if (input.keyword) {
+          filters.keyword = input.keyword;
+        }
+        
+        return await getContactSubmissions(filters);
+      }),
+    delete: publicProcedure
+      .input(
+        z.object({
+          ids: z.array(z.number()),
+          password: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        // Verify password
+        if (input.password !== ADMIN_PASSWORD) {
+          throw new Error("密碼錯誤");
+        }
+
+        try {
+          const db = await getDb();
+          if (!db) {
+            throw new Error("資料庫連接失敗");
+          }
+          
+          // Delete submissions by IDs
+          for (const id of input.ids) {
+            await db
+              .delete(contactSubmissions)
+              .where(eq(contactSubmissions.id, id));
+          }
+          
+          return {
+            success: true,
+            message: `已刪除 ${input.ids.length} 條記錄`,
+          };
+        } catch (error) {
+          console.error("[Contact] Failed to delete submissions:", error);
+          throw new Error("刪除失敗");
+        }
+      }),
+    verifyPassword: publicProcedure
+      .input(z.object({ password: z.string() }))
+      .mutation(async ({ input }) => {
+        const isValid = input.password === ADMIN_PASSWORD;
+        return { success: isValid };
       }),
     submit: publicProcedure
       .input(
