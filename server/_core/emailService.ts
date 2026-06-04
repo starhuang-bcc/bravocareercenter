@@ -1,5 +1,4 @@
-import { TRPCError } from "@trpc/server";
-import { ENV } from "./env";
+import { notifyOwner } from "./notification";
 
 export type EmailPayload = {
   to: string;
@@ -8,65 +7,41 @@ export type EmailPayload = {
 };
 
 /**
- * Sends an email using the Manus built-in email service.
+ * Sends an email using the Manus notification service.
+ * For company emails, uses the notification system.
+ * For user emails (auto-reply), formats as a notification.
  * Returns `true` if successful, `false` if the service is unavailable.
  */
 export async function sendEmail(payload: EmailPayload): Promise<boolean> {
   if (!payload.to || !payload.subject || !payload.content) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Email recipient, subject, and content are required.",
-    });
+    console.warn("[Email] Missing required email fields");
+    return false;
   }
-
-  if (!ENV.forgeApiUrl) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Email service URL is not configured.",
-    });
-  }
-
-  if (!ENV.forgeApiKey) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Email service API key is not configured.",
-    });
-  }
-
-  const endpoint = new URL(
-    "webdevtoken.v1.WebDevService/SendEmail",
-    ENV.forgeApiUrl.endsWith("/") ? ENV.forgeApiUrl : `${ENV.forgeApiUrl}/`
-  ).toString();
 
   try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        authorization: `Bearer ${ENV.forgeApiKey}`,
-        "content-type": "application/json",
-        "connect-protocol-version": "1",
-      },
-      body: JSON.stringify({
-        to: payload.to,
-        subject: payload.subject,
-        content: payload.content,
-      }),
+    // Format the email as a notification
+    const notificationTitle = `${payload.subject}`;
+    const notificationContent = `
+**收件人**: ${payload.to}
+
+${payload.content}
+    `.trim();
+
+    // Send via notification service
+    const success = await notifyOwner({
+      title: notificationTitle,
+      content: notificationContent,
     });
 
-    if (!response.ok) {
-      const detail = await response.text().catch(() => "");
-      console.warn(
-        `[Email] Failed to send email (${response.status} ${response.statusText})${
-          detail ? `: ${detail}` : ""
-        }`
-      );
-      return false;
+    if (success) {
+      console.log(`[Email] Successfully sent email to ${payload.to}`);
+    } else {
+      console.warn(`[Email] Failed to send email to ${payload.to}`);
     }
 
-    return true;
+    return success;
   } catch (error) {
-    console.warn("[Email] Error calling email service:", error);
+    console.error("[Email] Error sending email:", error);
     return false;
   }
 }

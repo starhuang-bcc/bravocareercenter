@@ -4,6 +4,7 @@ import { ENV } from "./env";
 export type NotificationPayload = {
   title: string;
   content: string;
+  toOpenId?: string; // Optional: specify recipient, defaults to project owner
 };
 
 const TITLE_MAX_LENGTH = 1200;
@@ -54,7 +55,7 @@ const validatePayload = (input: NotificationPayload): NotificationPayload => {
     });
   }
 
-  return { title, content };
+  return { title, content, toOpenId: input.toOpenId };
 };
 
 /**
@@ -66,7 +67,7 @@ const validatePayload = (input: NotificationPayload): NotificationPayload => {
 export async function notifyOwner(
   payload: NotificationPayload
 ): Promise<boolean> {
-  const { title, content } = validatePayload(payload);
+  const { title, content, toOpenId } = validatePayload(payload);
 
   if (!ENV.forgeApiUrl) {
     throw new TRPCError({
@@ -93,7 +94,11 @@ export async function notifyOwner(
         "content-type": "application/json",
         "connect-protocol-version": "1",
       },
-      body: JSON.stringify({ title, content }),
+      body: JSON.stringify({ 
+    title, 
+    content,
+    ...(payload.toOpenId && { toOpenId: payload.toOpenId })
+  }),
     });
 
     if (!response.ok) {
@@ -101,7 +106,8 @@ export async function notifyOwner(
       console.warn(
         `[Notification] Failed to notify owner (${response.status} ${response.statusText})${
           detail ? `: ${detail}` : ""
-        }`
+        }`,
+        { payload: { title, content, toOpenId } }
       );
       return false;
     }

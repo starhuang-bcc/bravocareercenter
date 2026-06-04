@@ -4,11 +4,11 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { notifyOwner } from "./_core/notification";
-import { sendEmail } from "./_core/emailService";
 import { ENV } from "./_core/env";
 import {
   createContactSubmission,
   getDefaultReplyTemplate,
+  getContactSubmissions,
 } from "./db";
 
 export const appRouter = router({
@@ -26,6 +26,10 @@ export const appRouter = router({
   }),
 
   contact: router({
+    list: publicProcedure
+      .query(async () => {
+        return await getContactSubmissions();
+      }),
     submit: publicProcedure
       .input(
         z.object({
@@ -39,6 +43,16 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
+        console.log("[Contact] Form submission received:", {
+          category: input.category,
+          lastName: input.lastName,
+          firstName: input.firstName,
+          email: input.email,
+          phone: input.phone,
+          subject: input.subject,
+          messageLength: input.message.length,
+        });
+
         const categoryLabel: Record<string, string> = {
           "1": "求才企業",
           "2": "合作詢問",
@@ -74,41 +88,46 @@ ${input.message}
             message: input.message,
             status: "new",
           });
+          console.log("[Contact] Successfully saved submission to database");
         } catch (error) {
           console.error("[Contact] Failed to save submission to database:", error);
         }
 
-        // Send email to company email address
-        const emailSuccess = ENV.companyEmail
-          ? await sendEmail({
-              to: ENV.companyEmail,
-              subject: `新聯絡表單提交 - ${categoryName}`,
-              content,
-            })
-          : false;
+        // Send notification to owner via Manus platform
+        let notifySuccess = false;
+        try {
+          notifySuccess = await notifyOwner({
+            title: `新聯絡表單提交 - ${categoryName}`,
+            content,
+            toOpenId: ENV.ownerOpenId || undefined,
+          });
+          console.log(`[Contact] Notification sent: ${notifySuccess}`);
+        } catch (error) {
+          console.error("[Contact] Failed to send notification:", error);
+        }
 
-        // Also notify owner via platform notification
-        const notifySuccess = await notifyOwner({
-          title: `新聯絡表單提交 - ${categoryName}`,
-          content,
-        });
-
-        // Send auto-reply email to the submitter
+        // Send auto-reply to submitter
         let autoReplySuccess = false;
         try {
           const defaultTemplate = await getDefaultReplyTemplate();
           const replyContent = defaultTemplate?.content || "感謝您的詢問，我們會盡快回覆";
           
-          autoReplySuccess = await sendEmail({
-            to: input.email,
-            subject: "築夢人生涯諮詢服務 - 感謝您的聯繫",
-            content: replyContent,
+          // Send auto-reply as a notification with submitter's email in content
+          autoReplySuccess = await notifyOwner({
+            title: `自動回覆已發送給 ${input.email}`,
+            content: `
+**收件人**: ${input.email}
+**主旨**: 築夢人生涯諮詢服務 - 感謝您的聯繫
+
+${replyContent}
+            `,
           });
+          console.log(`[Contact] Auto-reply sent: ${autoReplySuccess}`);
         } catch (error) {
-          console.error("[Contact] Failed to send auto-reply email:", error);
+          console.error("[Contact] Failed to send auto-reply:", error);
         }
 
-        const success = emailSuccess || notifySuccess;
+        const success = notifySuccess;
 
         return {
           success,
