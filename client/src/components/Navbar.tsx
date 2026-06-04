@@ -4,9 +4,7 @@
  * 滾動後加入背景模糊效果，手機版漢堡選單
  */
 import { useState, useEffect } from "react";
-import { Menu, X, Lock } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { useLocation } from "wouter";
+import { Menu, X } from "lucide-react";
 
 const navItems = [
   { label: "服務特色", href: "#features" },
@@ -20,8 +18,6 @@ const navItems = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user } = useAuth();
-  const [, navigate] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -33,11 +29,6 @@ export default function Navbar() {
     setMobileOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleAdminClick = () => {
-    setMobileOpen(false);
-    navigate("/admin/contacts");
   };
 
   return (
@@ -110,22 +101,6 @@ export default function Navbar() {
             )
           )}
 
-          {/* Admin Button - Only show for logged-in admin users */}
-          {user?.role === "admin" && (
-            <button
-              onClick={handleAdminClick}
-              className="font-sans-tc text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 border"
-              style={{
-                color: "oklch(0.28 0.08 250)",
-                borderColor: "oklch(0.28 0.08 250)",
-              }}
-              title="進入後台管理"
-            >
-              <Lock size={16} />
-              <span>後台</span>
-            </button>
-          )}
-
           <button
             onClick={() => handleNavClick("#contact")}
             className="font-sans-tc text-sm font-semibold px-5 py-2 rounded-full text-white transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -173,19 +148,6 @@ export default function Navbar() {
                   </button>
                 )
               )}
-
-              {/* Admin Button - Mobile */}
-              {user?.role === "admin" && (
-                <button
-                  onClick={handleAdminClick}
-                  className="font-sans-tc text-sm font-medium py-3 px-2 text-left rounded-lg transition-colors hover:bg-slate-50 flex items-center gap-2"
-                  style={{ color: "oklch(0.28 0.08 250)" }}
-                >
-                  <Lock size={16} />
-                  <span>進入後台</span>
-                </button>
-              )}
-
               <button
                 onClick={() => handleNavClick("#contact")}
                 className="mt-2 font-sans-tc text-sm font-semibold py-3 rounded-full text-white text-center"
