@@ -45,3 +45,19 @@ export const contactSubmissions = mysqlTable("contactSubmissions", {
 
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
+
+/**
+ * Reply templates table
+ * Stores predefined reply templates for quick responses
+ */
+export const replyTemplates = mysqlTable("replyTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // e.g., "Default Reply", "Urgent Response"
+  content: text("content").notNull(), // The template content
+  isDefault: mysqlEnum("isDefault", ["yes", "no"]).default("no").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ReplyTemplate = typeof replyTemplates.$inferSelect;
+export type InsertReplyTemplate = typeof replyTemplates.$inferInsert;

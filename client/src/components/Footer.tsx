@@ -1,13 +1,10 @@
 /**
  * Footer — 頁尾
  * 設計：靛藍深色背景 + 三欄式資訊架構
- * 包含：Logo、人才服務、生涯諮詢、公司資訊、法規連結、管理員登入
+ * 包含：Logo、人才服務、生涯諮詢、公司資訊、法規連結
  */
 import { useState } from "react";
-import { Phone, Mail, ExternalLink, Lock } from "lucide-react";
-import { useLocation } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { Phone, Mail, ExternalLink } from "lucide-react";
 import PrivacyModal from "./PrivacyModal";
 
 const talentServiceLinks = [
@@ -51,16 +48,6 @@ const careerLinks = [
 
 export default function Footer() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
-  const { user } = useAuth();
-  const [, navigate] = useLocation();
-
-  const handleAdminClick = () => {
-    navigate("/admin/contacts");
-  };
-
-  const handleAdminLogin = () => {
-    window.location.href = getLoginUrl();
-  };
 
   return (
     <>
@@ -224,44 +211,20 @@ export default function Footer() {
           />
 
           {/* Bottom */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <p
               className="font-sans-tc text-xs"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
               © 2026 築夢人生涯諮詢服務有限公司 All Rights Reserved.
             </p>
-            <div className="flex items-center gap-4">
-              {/* Admin Login Link */}
-              {user?.role === "admin" ? (
-                <button
-                  onClick={handleAdminClick}
-                  className="font-sans-tc text-xs flex items-center gap-1 transition-colors hover:text-white"
-                  style={{ color: "rgba(255,255,255,0.55)" }}
-                  title="進入後台管理"
-                >
-                  <Lock size={12} />
-                  <span>後台</span>
-                </button>
-              ) : (
-                <button
-                  onClick={handleAdminLogin}
-                  className="font-sans-tc text-xs flex items-center gap-1 transition-colors hover:text-white"
-                  style={{ color: "rgba(255,255,255,0.55)" }}
-                  title="管理員登入"
-                >
-                  <Lock size={12} />
-                  <span>管理員登入</span>
-                </button>
-              )}
-              <button
-                onClick={() => setPrivacyOpen(true)}
-                className="font-sans-tc text-xs transition-colors hover:text-white"
-                style={{ color: "rgba(255,255,255,0.35)" }}
-              >
-                隱私權政策
-              </button>
-            </div>
+            <button
+              onClick={() => setPrivacyOpen(true)}
+              className="font-sans-tc text-xs transition-colors hover:text-white"
+              style={{ color: "rgba(255,255,255,0.35)" }}
+            >
+              隱私權政策
+            </button>
           </div>
         </div>
       </footer>

@@ -8,10 +8,7 @@ import { sendEmail } from "./_core/emailService";
 import { ENV } from "./_core/env";
 import {
   createContactSubmission,
-  getContactSubmissions,
-  getContactSubmissionById,
-  updateContactSubmissionStatus,
-  getContactSubmissionStats,
+  getDefaultReplyTemplate,
 } from "./db";
 
 export const appRouter = router({
@@ -96,6 +93,21 @@ ${input.message}
           content,
         });
 
+        // Send auto-reply email to the submitter
+        let autoReplySuccess = false;
+        try {
+          const defaultTemplate = await getDefaultReplyTemplate();
+          const replyContent = defaultTemplate?.content || "感謝您的詢問，我們會盡快回覆";
+          
+          autoReplySuccess = await sendEmail({
+            to: input.email,
+            subject: "築夢人生涯諮詢服務 - 感謝您的聯繫",
+            content: replyContent,
+          });
+        } catch (error) {
+          console.error("[Contact] Failed to send auto-reply email:", error);
+        }
+
         const success = emailSuccess || notifySuccess;
 
         return {
@@ -103,75 +115,6 @@ ${input.message}
           message: success ? "訊息已送出，感謝您的聯繫！" : "訊息發送失敗，請稍後重試。",
         };
       }),
-
-    // Admin-only routes
-    list: protectedProcedure
-      .input(
-        z.object({
-          status: z.enum(["new", "read", "replied", "archived"]).optional(),
-          keyword: z.string().optional(),
-          startDate: z.date().optional(),
-          endDate: z.date().optional(),
-          limit: z.number().int().positive().max(100).default(20),
-          offset: z.number().int().nonnegative().default(0),
-        })
-      )
-      .query(async ({ input, ctx }) => {
-        // Only allow admin users to list submissions
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Unauthorized");
-        }
-
-        const submissions = await getContactSubmissions({
-          status: input.status,
-          keyword: input.keyword,
-          startDate: input.startDate,
-          endDate: input.endDate,
-          limit: input.limit,
-          offset: input.offset,
-        });
-
-        return submissions;
-      }),
-
-    getById: protectedProcedure
-      .input(z.object({ id: z.number().int().positive() }))
-      .query(async ({ input, ctx }) => {
-        // Only allow admin users to view submissions
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Unauthorized");
-        }
-
-        const submission = await getContactSubmissionById(input.id);
-        return submission;
-      }),
-
-    updateStatus: protectedProcedure
-      .input(
-        z.object({
-          id: z.number().int().positive(),
-          status: z.enum(["new", "read", "replied", "archived"]),
-        })
-      )
-      .mutation(async ({ input, ctx }) => {
-        // Only allow admin users to update submissions
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Unauthorized");
-        }
-
-        const success = await updateContactSubmissionStatus(input.id, input.status);
-        return { success };
-      }),
-
-    getStats: protectedProcedure.query(async ({ ctx }) => {
-      // Only allow admin users to view stats
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Unauthorized");
-      }
-
-      const stats = await getContactSubmissionStats();
-      return stats;
-    }),
   }),
 });
 

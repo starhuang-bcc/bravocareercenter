@@ -1,6 +1,6 @@
 import { eq, desc, or, and, like, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, contactSubmissions, InsertContactSubmission, ContactSubmission } from "../drizzle/schema";
+import { InsertUser, users, contactSubmissions, InsertContactSubmission, ContactSubmission, replyTemplates } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -271,5 +271,77 @@ export async function getContactSubmissionStats(): Promise<{
   } catch (error) {
     console.error("[Database] Failed to get contact submission stats:", error);
     return { total: 0, new: 0, read: 0, replied: 0, archived: 0 };
+  }
+}
+
+/**
+ * Create a new reply template
+ */
+export async function createReplyTemplate(
+  template: any
+): Promise<any | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create reply template: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(replyTemplates).values(template);
+    const id = Number((result as any).insertId);
+    if (!id) return null;
+
+    const created = await db
+      .select()
+      .from(replyTemplates)
+      .where(eq(replyTemplates.id, id))
+      .limit(1);
+
+    return created.length > 0 ? created[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create reply template:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get all reply templates
+ */
+export async function getReplyTemplates(): Promise<any[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get reply templates: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(replyTemplates).orderBy(desc(replyTemplates.createdAt));
+  } catch (error) {
+    console.error("[Database] Failed to get reply templates:", error);
+    return [];
+  }
+}
+
+/**
+ * Get default reply template
+ */
+export async function getDefaultReplyTemplate(): Promise<any | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get default reply template: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(replyTemplates)
+      .where(eq(replyTemplates.isDefault, "yes"))
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to get default reply template:", error);
+    return null;
   }
 }
