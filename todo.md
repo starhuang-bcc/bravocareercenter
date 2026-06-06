@@ -73,3 +73,27 @@
 - 使用 Google 結構化數據測試工具驗證 Schema 標記
 - 在 Google Search Console 中檢查結構化數據報告
 - 監控搜尋結果中的 Rich Snippets 顯示情況
+
+
+## 社群媒體優化 - Open Graph 和 Twitter Card
+- [ ] 創建 Meta 標籤工具函數
+- [ ] 在 HTML 中添加基礎 OG 和 Twitter Card 標籤
+- [ ] 創建動態 Meta 標籤 React 組件
+- [ ] 在首頁應用 Meta 標籤
+- [ ] 在服務頁面應用 Meta 標籤
+- [ ] 使用社群媒體分享預覽工具驗證
+
+
+## Open Graph 和 Twitter Card 實現完成
+- [x] 創建 Meta 標籤工具函數
+  - client/src/lib/meta.ts：包含所有 Meta 標籤生成函數
+  - generateOpenGraphMeta()、generateTwitterCardMeta()、generateStandardMeta()
+- [x] 在 HTML 中添加基礎 OG 和 Twitter Card 標籤
+  - client/index.html：添加所有必要的 Meta 標籤
+- [x] 創建動態 Meta 標籤 React 組件
+  - client/src/components/MetaTags.tsx：React 組件用於動態設置標籤
+- [x] 在首頁應用 Meta 標籤
+  - Home.tsx：使用 MetaTags 組件
+- [x] 驗證 Meta 標籤
+  - 所有 Meta 標籤已正確注入到 HTML 中
+  - 所有現有測試通過（7 tests passed）
