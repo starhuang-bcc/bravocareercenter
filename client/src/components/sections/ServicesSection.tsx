@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
 
 const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
-const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/outsourcing-service-NQp2dK95n9fFptvtf9ascK.webp";
+const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/talent-outsourcing-service-AS78aiUn8yQEiRxdbRRofb.webp";
 const MALE_COACHING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/service-3-hr-communicative-male-Gwy2Wg5kTX2kp5zQrEmzE9.webp";
 
 const jobPositions = [
@@ -146,7 +146,7 @@ export default function ServicesSection() {
               src={OUTSOURCING_IMG}
               alt="人才外包服務"
               className="relative z-10 w-full rounded-2xl object-cover shadow-lg"
-              style={{ aspectRatio: "4/3", objectPosition: "center" }}
+              style={{ aspectRatio: "16/9", objectPosition: "left center" }}
             />
           </div>
 

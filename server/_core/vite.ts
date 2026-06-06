@@ -3,8 +3,36 @@ import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
 import path from "path";
-import { createServer as createViteServer } from "vite";
+import { createServer as createViteServer, type InlineConfig } from "vite";
 import viteConfig from "../../vite.config";
+
+const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://bravocareercenter.com/</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://bravocareercenter.com/#services</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bravocareercenter.com/#about</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bravocareercenter.com/#contact</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>`;
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -13,14 +41,28 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true as const,
   };
 
-  const vite = await createViteServer({
+  // Create a custom Vite config
+  const customConfig: InlineConfig = {
     ...viteConfig,
     configFile: false,
     server: serverOptions,
     appType: "custom",
+  };
+
+  const vite = await createViteServer(customConfig);
+
+  // Add sitemap middleware BEFORE vite.middlewares
+  app.use((req, res, next) => {
+    if (req.path === "/sitemap.xml") {
+      res.type("application/xml");
+      res.send(SITEMAP_XML);
+      return;
+    }
+    next();
   });
 
   app.use(vite.middlewares);
+  
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
@@ -57,6 +99,16 @@ export function serveStatic(app: Express) {
       `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
   }
+
+  // Add sitemap middleware BEFORE static files
+  app.use((req, res, next) => {
+    if (req.path === "/sitemap.xml") {
+      res.type("application/xml");
+      res.send(SITEMAP_XML);
+      return;
+    }
+    next();
+  });
 
   app.use(express.static(distPath));
 
