@@ -20,10 +20,16 @@ import ProcessSection from "@/components/sections/ProcessSection";
 import AboutSection from "@/components/sections/AboutSection";
 import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/Footer";
+import { SchemaScript } from "@/components/SchemaScript";
+import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/lib/schema";
 
 export default function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "oklch(0.99 0.005 80)" }}>
+      {/* Schema.org 結構化數據 */}
+      <SchemaScript schema={generateOrganizationSchema()} id="org-schema" />
+      <SchemaScript schema={generateLocalBusinessSchema()} id="local-business-schema" />
+      
       <Navbar />
       <HeroSection />
       <FeaturesSection />

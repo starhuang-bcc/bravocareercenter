@@ -4,6 +4,8 @@
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
+import { SchemaScript } from "@/components/SchemaScript";
+import { generateServiceSchema } from "@/lib/schema";
 
 const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
 const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/talent-outsourcing-service-AS78aiUn8yQEiRxdbRRofb.webp";
@@ -32,9 +34,33 @@ export default function ServicesSection() {
   const ref1 = useScrollAnimation();
   const ref2 = useScrollAnimation();
 
+  // 三個服務的 Schema 數據
+  const headhuntingSchema = generateServiceSchema(
+    "專業獵才服務",
+    "跨足各式產業，精準洞察企業需求，為您及時媒合不可或缺的專業人才與中高階主管職缺。我們擁有豐富的人才資料庫，結合深度需求訪談，確保每一位推薦人選都能真正符合您的期待。",
+    `${typeof window !== "undefined" ? window.location.origin : "https://bravocareercenter.com"}#services`
+  );
+
+  const outsourcingSchema = generateServiceSchema(
+    "人才外包服務",
+    "靈活活用人才，優化人資管理。我們提供從招募到離職的『一站式』全程服務，涵蓋出勤打卡系統管理，並搭配派駐轉正的彈性機制，讓企業管理更省心。",
+    `${typeof window !== "undefined" ? window.location.origin : "https://bravocareercenter.com"}#services`
+  );
+
+  const careerConsultingSchema = generateServiceSchema(
+    "生涯諮詢服務",
+    "提供專業的生涯規劃和職業發展諮詢，幫助個人和企業實現職涯目標。",
+    `${typeof window !== "undefined" ? window.location.origin : "https://bravocareercenter.com"}#services`
+  );
+
   return (
-    <section id="services" className="py-20 lg:py-28 bg-white">
-      <div className="container">
+    <>
+      {/* Service Schema 標記 */}
+      <SchemaScript schema={headhuntingSchema} id="headhunting-service-schema" />
+      <SchemaScript schema={outsourcingSchema} id="outsourcing-service-schema" />
+      <SchemaScript schema={careerConsultingSchema} id="career-consulting-service-schema" />
+      <section id="services" className="py-20 lg:py-28 bg-white">
+        <div className="container">
         {/* Section Header */}
         <div className="text-center mb-16">
           <p
@@ -205,5 +231,6 @@ export default function ServicesSection() {
         </div>
       </div>
     </section>
+    </>
   );
 }

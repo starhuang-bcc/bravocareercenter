@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SubmissionsPage from "./pages/SubmissionsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
+import { BreadcrumbSchema } from "./components/BreadcrumbSchema";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -36,6 +37,8 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
+          {/* BreadcrumbList Schema */}
+          <BreadcrumbSchema />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

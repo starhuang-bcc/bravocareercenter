@@ -45,3 +45,31 @@
   - 增加左側邊距 15%
   - 確保所有文字不會被容器切割
   - 已部署到生產環境（兩個域名都已生效）
+
+
+## SEO 優化 - Schema.org 結構化數據
+- [ ] 創建 Schema 組件和工具函數
+- [ ] 添加 Organization Schema（公司信息）
+- [ ] 添加 LocalBusiness Schema（本地商業信息）
+- [ ] 添加 Service Schema（服務信息）
+- [ ] 添加 BreadcrumbList Schema（導航路徑）
+- [ ] 驗證 Schema 標記使用 Google 結構化數據測試工具
+- [ ] 在 Google Search Console 中檢查結構化數據報告
+
+## Schema.org 結構化數據實現完成
+- [x] 創建 Schema 工具函數和組件
+  - client/src/lib/schema.ts：包含所有 Schema 生成函數
+  - client/src/components/SchemaScript.tsx：React 組件用於注入 JSON-LD
+- [x] 在首頁添加 Organization 和 LocalBusiness Schema
+  - 在 Home.tsx 中使用 SchemaScript 組件
+- [x] 在服務頁面添加 Service Schema
+  - 在 ServicesSection.tsx 中添加三個服務的 Schema
+- [x] 添加 BreadcrumbList Schema
+  - 創建 BreadcrumbSchema 組件
+  - 在 App.tsx 中自動注入麵包屑導航 Schema
+- [x] 所有現有測試通過（7 tests passed）
+
+## 下一步建議
+- 使用 Google 結構化數據測試工具驗證 Schema 標記
+- 在 Google Search Console 中檢查結構化數據報告
+- 監控搜尋結果中的 Rich Snippets 顯示情況
