@@ -12,13 +12,13 @@ const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/31051966372660864
 const MALE_COACHING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/service-3-hr-communicative-male-Gwy2Wg5kTX2kp5zQrEmzE9.webp";
 
 const jobPositions = [
-  "軟韌體開發 RD",
-  "硬體研發 RD",
-  "類比/數位 IC 設計 RD",
-  "封裝 RD",
+  "軟韌體開發RD",
+  "硬體研發RD",
+  "類比/數位IC設計RD",
+  "軟硬體測試RD",
   "資料工程/分析師",
-  "測試品保 RD",
-  "製程/製程整合 RD",
+  "CV/ML/DL/RL RD",
+  "製程/製程整合RD",
   "Business Development Manager",
   "Product / Project Manager",
 ];

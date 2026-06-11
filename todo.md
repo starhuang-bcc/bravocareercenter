@@ -97,3 +97,17 @@
 - [x] 驗證 Meta 標籤
   - 所有 Meta 標籤已正確注入到 HTML 中
   - 所有現有測試通過（7 tests passed）
+
+
+## 職缺列表更新
+- [x] 更新常見招募職缺文字為新的 9 個職位
+  - 軟韌體開發RD
+  - 硬體研發RD
+  - 類比/數位IC設計RD
+  - 軟硬體測試RD（替代「封裝 RD」）
+  - 資料工程/分析師
+  - CV/ML/DL/RL RD（替代「測試品保 RD」）
+  - 製程/製程整合RD
+  - Business Development Manager
+  - Product / Project Manager
+  - 已部署到生產環境
