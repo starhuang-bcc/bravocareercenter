@@ -111,3 +111,15 @@
   - Business Development Manager
   - Product / Project Manager
   - 已部署到生產環境
+- [x] 為職缺列表添加科技感小圖示
+  - Code 圖示用於軟韌體開發RD
+  - Cpu 圖示用於硬體研發RD
+  - Zap 圖示用於類比/數位IC設計RD
+  - TestTube 圖示用於軟硬體測試RD
+  - Database 圖示用於資料工程/分析師
+  - Brain 圖示用於CV/ML/DL/RL RD
+  - Wrench 圖示用於製程/製程整合RD
+  - TrendingUp 圖示用於Business Development Manager
+  - Briefcase 圖示用於Product / Project Manager
+  - 所有測試通過（7 tests passed）
+  - 已部署到生產環境

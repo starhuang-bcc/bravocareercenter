@@ -3,7 +3,7 @@
  * 設計：左右交替非對稱排版 + 職缺網格 + 跑馬燈
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
+import { Search, Users, CheckCircle, Clock, FileText, RotateCcw, Code, Cpu, Zap, TestTube, Database, Brain, Wrench, TrendingUp, Briefcase } from "lucide-react";
 import { SchemaScript } from "@/components/SchemaScript";
 import { generateServiceSchema } from "@/lib/schema";
 
@@ -12,15 +12,15 @@ const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/31051966372660864
 const MALE_COACHING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/service-3-hr-communicative-male-Gwy2Wg5kTX2kp5zQrEmzE9.webp";
 
 const jobPositions = [
-  "軟韌體開發RD",
-  "硬體研發RD",
-  "類比/數位IC設計RD",
-  "軟硬體測試RD",
-  "資料工程/分析師",
-  "CV/ML/DL/RL RD",
-  "製程/製程整合RD",
-  "Business Development Manager",
-  "Product / Project Manager",
+  { title: "軟韌體開發RD", icon: Code },
+  { title: "硬體研發RD", icon: Cpu },
+  { title: "類比/數位IC設計RD", icon: Zap },
+  { title: "軟硬體測試RD", icon: TestTube },
+  { title: "資料工程/分析師", icon: Database },
+  { title: "CV/ML/DL/RL RD", icon: Brain },
+  { title: "製程/製程整合RD", icon: Wrench },
+  { title: "Business Development Manager", icon: TrendingUp },
+  { title: "Product / Project Manager", icon: Briefcase },
 ];
 
 const outsourcingFeatures = [
@@ -123,19 +123,31 @@ export default function ServicesSection() {
                 常見招募職缺
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {jobPositions.slice(0, 9).map((job) => (
-                  <span
-                    key={job}
-                    className="font-sans-tc text-xs px-3 py-1.5 rounded-lg text-center"
-                    style={{
-                      backgroundColor: "oklch(0.97 0.01 250)",
-                      color: "oklch(0.28 0.08 250)",
-                      border: "1px solid oklch(0.90 0.02 250)",
-                    }}
-                  >
-                    {job}
-                  </span>
-                ))}
+                {jobPositions.slice(0, 9).map((job) => {
+                  const IconComponent = job.icon;
+                  return (
+                    <div
+                      key={job.title}
+                      className="flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-lg text-center transition-all hover:shadow-md"
+                      style={{
+                        backgroundColor: "oklch(0.97 0.01 250)",
+                        border: "1px solid oklch(0.90 0.02 250)",
+                      }}
+                    >
+                      <IconComponent
+                        size={18}
+                        style={{ color: "oklch(0.62 0.15 45)" }}
+                        strokeWidth={1.8}
+                      />
+                      <span
+                        className="font-sans-tc text-xs leading-tight"
+                        style={{ color: "oklch(0.28 0.08 250)" }}
+                      >
+                        {job.title}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
