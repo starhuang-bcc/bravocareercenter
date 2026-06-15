@@ -94,6 +94,50 @@ export const appRouter = router({
           throw new Error("刪除失敗");
         }
       }),
+    deleteMultiple: publicProcedure
+      .input(
+        z.object({
+          ids: z.array(z.number()).min(1, "至少選擇一條記錄"),
+          password: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        // Verify password
+        if (input.password !== ADMIN_PASSWORD) {
+          throw new Error("密碼錯誤");
+        }
+
+        if (input.ids.length === 0) {
+          throw new Error("請選擇至少一條記錄");
+        }
+
+        try {
+          const db = await getDb();
+          if (!db) {
+            throw new Error("資料庫連接失敗");
+          }
+          
+          // Delete each submission by ID
+          let deletedCount = 0;
+          for (const id of input.ids) {
+            await db
+              .delete(contactSubmissions)
+              .where(eq(contactSubmissions.id, id));
+            deletedCount++;
+          }
+          
+          console.log(`[Contact] Successfully deleted ${deletedCount} submissions`);
+          
+          return {
+            success: true,
+            deletedCount: deletedCount,
+            message: `已成功刪除 ${deletedCount} 條記錄`,
+          };
+        } catch (error) {
+          console.error("[Contact] Failed to delete multiple submissions:", error);
+          throw new Error("批量刪除失敗");
+        }
+      }),
     verifyPassword: publicProcedure
       .input(z.object({ password: z.string() }))
       .mutation(async ({ input }) => {

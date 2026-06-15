@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,8 +40,9 @@ export default function SubmissionsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [password, setPassword] = useState("");
+  const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
 
-  const deleteMutation = trpc.contact.delete.useMutation();
+  const deleteMultipleMutation = trpc.contact.deleteMultiple.useMutation();
 
   // 檢查登錄狀態並獲取密碼
   useEffect(() => {
@@ -81,6 +82,11 @@ export default function SubmissionsPage() {
     setLocation("/");
   };
 
+  // 當篩選條件改變時，清空選中狀態
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [selectedCategory, searchKeyword]);
+
   // 過濾提交
   useEffect(() => {
     let filtered = submissions;
@@ -114,6 +120,14 @@ export default function SubmissionsPage() {
     }
   };
 
+  // Update checkbox indeterminate state
+  useEffect(() => {
+    if (selectAllCheckboxRef.current) {
+      selectAllCheckboxRef.current.indeterminate =
+        selectedIds.size > 0 && selectedIds.size < filteredSubmissions.length;
+    }
+  }, [selectedIds, filteredSubmissions]);
+
   const handleSelectId = (id: number) => {
     const newSelected = new Set(selectedIds);
     if (newSelected.has(id)) {
@@ -136,7 +150,7 @@ export default function SubmissionsPage() {
 
     setDeleteLoading(true);
     try {
-      await deleteMutation.mutateAsync({
+      await deleteMultipleMutation.mutateAsync({
         ids: Array.from(selectedIds),
         password,
       });
@@ -182,6 +196,40 @@ export default function SubmissionsPage() {
           </Button>
         </div>
 
+        {/* Select All and Bulk Actions */}
+        {filteredSubmissions.length > 0 && (
+          <Card className="mb-4 bg-blue-50 border-blue-200">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <input
+                    ref={selectAllCheckboxRef}
+                    type="checkbox"
+                    checked={selectedIds.size === filteredSubmissions.length && filteredSubmissions.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    {selectedIds.size === 0
+                      ? `全選 (${filteredSubmissions.length} 條)`
+                      : `已選擇 ${selectedIds.size} / ${filteredSubmissions.length} 條`}
+                  </span>
+                </div>
+                {selectedIds.size > 0 && (
+                  <Button
+                    onClick={handleDelete}
+                    disabled={deleteLoading}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    <Trash2 size={18} className="mr-2" />
+                    {deleteLoading ? "刪除中..." : `刪除選中 (${selectedIds.size})`}
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Search and Filter */}
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -220,19 +268,7 @@ export default function SubmissionsPage() {
               ))}
             </div>
 
-            {/* Delete Button */}
-            {selectedIds.size > 0 && (
-              <div className="mt-4 flex gap-2">
-                <Button
-                  onClick={handleDelete}
-                  disabled={deleteLoading}
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  <Trash2 size={18} className="mr-2" />
-                  刪除選中的 {selectedIds.size} 條記錄
-                </Button>
-              </div>
-            )}
+
           </CardContent>
         </Card>
 
