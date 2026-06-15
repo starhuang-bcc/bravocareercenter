@@ -15,7 +15,7 @@ const jobPositions = [
   { title: "軟韌體開發RD", icon: Code },
   { title: "硬體研發RD", icon: Cpu },
   { title: "類比/數位IC設計RD", icon: Zap },
-  { title: "軟硬體測試RD", icon: TestTube },
+  { title: "測試驗證RD", icon: TestTube },
   { title: "資料工程/分析師", icon: Database },
   { title: "CV/ML/DL/RL RD", icon: Brain },
   { title: "製程/製程整合RD", icon: Wrench },
