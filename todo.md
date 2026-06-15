@@ -123,3 +123,14 @@
   - Briefcase 圖示用於Product / Project Manager
   - 所有測試通過（7 tests passed）
   - 已部署到生產環境
+
+
+## SEO 優化 - 重複網頁修復
+- [x] 添加 Canonical 標籤指向 www.bravocareercenter.com
+- [x] 配置 301 永久重定向（非 www → www）
+- [x] 更新 Sitemap 中所有 URL 為 www 版本
+- [x] 更新 Open Graph og:url 為 www 版本
+- [x] 添加 hreflang 標籤指向 www 版本
+- [ ] 在 Google Search Console 中設置首選域名為 www.bravocareercenter.com
+- [ ] 在 Google Search Console 中提交更新的 Sitemap
+- [ ] 等待 Google 重新抓取和索引（24-48 小時）

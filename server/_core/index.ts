@@ -35,6 +35,16 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+  // 301 Redirect: non-www to www (for SEO canonical URL)
+  app.use((req, res, next) => {
+    const host = req.get('host') || '';
+    if (host === 'bravocareercenter.com') {
+      const redirectUrl = `https://www.bravocareercenter.com${req.originalUrl}`;
+      return res.redirect(301, redirectUrl);
+    }
+    next();
+  });
+
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
@@ -52,26 +62,26 @@ async function startServer() {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://bravocareercenter.com/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <loc>https://www.bravocareercenter.com/</loc>
+    <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://bravocareercenter.com/#services</loc>
-    <lastmod>2026-06-06</lastmod>
+    <loc>https://www.bravocareercenter.com/#services</loc>
+    <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bravocareercenter.com/#about</loc>
-    <lastmod>2026-06-06</lastmod>
+    <loc>https://www.bravocareercenter.com/#about</loc>
+    <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bravocareercenter.com/#contact</loc>
-    <lastmod>2026-06-06</lastmod>
+    <loc>https://www.bravocareercenter.com/#contact</loc>
+    <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
