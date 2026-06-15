@@ -3,24 +3,37 @@
  * 設計：左右交替非對稱排版 + 職缺網格 + 跑馬燈
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Search, Users, CheckCircle, Clock, FileText, RotateCcw, Code, Cpu, Zap, TestTube, Database, Brain, Wrench, TrendingUp, Briefcase } from "lucide-react";
+import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-react";
 import { SchemaScript } from "@/components/SchemaScript";
 import { generateServiceSchema } from "@/lib/schema";
+
+// Job position icons - using image URLs
+const JOB_ICONS = {
+  softwareFirmware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  hardware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  icDesign: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  testing: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  dataEngineer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  aiMl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  process: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  businessDev: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
+  productManager: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-pm-alternative-NYwiXN6SZh9z72sTUYxx9i.webp",
+};
 
 const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
 const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/talent-outsourcing-service-hRFqiGgnRc5vEABGERa3vc.webp";
 const MALE_COACHING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/service-3-hr-communicative-male-Gwy2Wg5kTX2kp5zQrEmzE9.webp";
 
 const jobPositions = [
-  { title: "軟韌體開發RD", icon: Code },
-  { title: "硬體研發RD", icon: Cpu },
-  { title: "類比/數位IC設計RD", icon: Zap },
-  { title: "測試驗證RD", icon: TestTube },
-  { title: "資料工程/分析師", icon: Database },
-  { title: "CV/ML/DL/RL RD", icon: Brain },
-  { title: "製程/製程整合RD", icon: Wrench },
-  { title: "Business Development Manager", icon: TrendingUp },
-  { title: "Product / Project Manager", icon: Briefcase },
+  { title: "軟韌體開發RD", iconUrl: JOB_ICONS.softwareFirmware, position: "0% 0%" },
+  { title: "硬體研發RD", iconUrl: JOB_ICONS.hardware, position: "33.33% 0%" },
+  { title: "類比/數位IC設計RD", iconUrl: JOB_ICONS.icDesign, position: "66.66% 0%" },
+  { title: "測試驗證RD", iconUrl: JOB_ICONS.testing, position: "0% 33.33%" },
+  { title: "資料工程/分析師", iconUrl: JOB_ICONS.dataEngineer, position: "33.33% 33.33%" },
+  { title: "CV/ML/DL/RL RD", iconUrl: JOB_ICONS.aiMl, position: "66.66% 33.33%" },
+  { title: "製程/製程整合RD", iconUrl: JOB_ICONS.process, position: "0% 66.66%" },
+  { title: "Business Development Manager", iconUrl: JOB_ICONS.businessDev, position: "33.33% 66.66%" },
+  { title: "Product / Project Manager", iconUrl: JOB_ICONS.productManager, position: "66.66% 66.66%" },
 ];
 
 const outsourcingFeatures = [
@@ -124,7 +137,6 @@ export default function ServicesSection() {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {jobPositions.slice(0, 9).map((job) => {
-                  const IconComponent = job.icon;
                   return (
                     <div
                       key={job.title}
@@ -134,10 +146,15 @@ export default function ServicesSection() {
                         border: "1px solid oklch(0.90 0.02 250)",
                       }}
                     >
-                      <IconComponent
-                        size={18}
-                        style={{ color: "oklch(0.62 0.15 45)" }}
-                        strokeWidth={1.8}
+                      <img
+                        src={job.iconUrl}
+                        alt={job.title}
+                        className="w-6 h-6 object-cover"
+                        style={{
+                          backgroundPosition: job.position,
+                          backgroundSize: "300% 300%",
+                          backgroundRepeat: "no-repeat",
+                        }}
                       />
                       <span
                         className="font-sans-tc text-xs leading-tight"

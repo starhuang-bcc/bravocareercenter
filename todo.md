@@ -156,3 +156,11 @@
 
 ## UI 文本修改
 - [x] 將「軟硬體測試RD」改成「測試驗證RD」
+
+## 職業 icon 圖片更新
+- [x] 生成 9 個職位的 icon 圖片預覽
+- [x] 更新軟韌體開發RD icon (代碼編輯器)
+- [x] 更新 Product/Project Manager icon (項目管理全景)
+- [x] 更新 ServicesSection.tsx 以使用新的 icon 圖片
+- [x] TypeScript 編譯成功
+- [x] 開發伺服器 HMR 熱更新已應用
