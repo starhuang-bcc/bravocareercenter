@@ -7,17 +7,17 @@ import { Search, Users, CheckCircle, Clock, FileText, RotateCcw } from "lucide-r
 import { SchemaScript } from "@/components/SchemaScript";
 import { generateServiceSchema } from "@/lib/schema";
 
-// Job position icons - using image URLs
+// Job position icons - using unique image URLs for each position
 const JOB_ICONS = {
-  softwareFirmware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  hardware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  icDesign: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  testing: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  dataEngineer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  aiMl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  process: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  businessDev: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-preview-v2-Dy5D2p3e8jN4moVX5qtVSe.webp",
-  productManager: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/job-icons-pm-alternative-NYwiXN6SZh9z72sTUYxx9i.webp",
+  softwareFirmware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-firmware-dev-W5RGZqVKeE7vSSjRXUcg2b.webp",
+  hardware: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-hardware-dev-LhwCp3mg6jDSTBDaW2MQ79.webp",
+  icDesign: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-ic-design-mXxHZnN3aUPn6obYQC8k2p.webp",
+  testing: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-qa-test-oYD6aZwQinNRUM8cAHJSZd.webp",
+  dataEngineer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-data-engineer-evu7vAnHFu9en3jcWgaEjk.webp",
+  aiMl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-ml-engineer-XDETgVER97SyCbCVxWcKD3.webp",
+  process: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-process-engineer-gpbVreHGZaVTtmD2qxYhjx.webp",
+  businessDev: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-bd-manager-oU9A2KnXSXqtXGJk7Vf5cd.webp",
+  productManager: "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/icon-pm-manager-dtG4DU76GnnyHYM8QTCT6Q.webp",
 };
 
 const HEADHUNTING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/services-headhunting-team-j5QRQcnxpptxgywCXRhX7v.webp";
@@ -25,15 +25,15 @@ const OUTSOURCING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/31051966372660864
 const MALE_COACHING_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/service-3-hr-communicative-male-Gwy2Wg5kTX2kp5zQrEmzE9.webp";
 
 const jobPositions = [
-  { title: "軟韌體開發RD", iconUrl: JOB_ICONS.softwareFirmware, position: "0% 0%" },
-  { title: "硬體研發RD", iconUrl: JOB_ICONS.hardware, position: "33.33% 0%" },
-  { title: "類比/數位IC設計RD", iconUrl: JOB_ICONS.icDesign, position: "66.66% 0%" },
-  { title: "測試驗證RD", iconUrl: JOB_ICONS.testing, position: "0% 33.33%" },
-  { title: "資料工程/分析師", iconUrl: JOB_ICONS.dataEngineer, position: "33.33% 33.33%" },
-  { title: "CV/ML/DL/RL RD", iconUrl: JOB_ICONS.aiMl, position: "66.66% 33.33%" },
-  { title: "製程/製程整合RD", iconUrl: JOB_ICONS.process, position: "0% 66.66%" },
-  { title: "Business Development Manager", iconUrl: JOB_ICONS.businessDev, position: "33.33% 66.66%" },
-  { title: "Product / Project Manager", iconUrl: JOB_ICONS.productManager, position: "66.66% 66.66%" },
+  { title: "軟韌體開發RD", iconUrl: JOB_ICONS.softwareFirmware },
+  { title: "硬體研發RD", iconUrl: JOB_ICONS.hardware },
+  { title: "類比/數位IC設計RD", iconUrl: JOB_ICONS.icDesign },
+  { title: "測試驗證RD", iconUrl: JOB_ICONS.testing },
+  { title: "資料工程/分析師", iconUrl: JOB_ICONS.dataEngineer },
+  { title: "CV/ML/DL/RL RD", iconUrl: JOB_ICONS.aiMl },
+  { title: "製程/製程整合RD", iconUrl: JOB_ICONS.process },
+  { title: "Business Development Manager", iconUrl: JOB_ICONS.businessDev },
+  { title: "Product / Project Manager", iconUrl: JOB_ICONS.productManager },
 ];
 
 const outsourcingFeatures = [
@@ -150,11 +150,6 @@ export default function ServicesSection() {
                         src={job.iconUrl}
                         alt={job.title}
                         className="w-20 h-20 object-cover transition-transform duration-300 ease-out group-hover:scale-110"
-                        style={{
-                          backgroundPosition: job.position,
-                          backgroundSize: "300% 300%",
-                          backgroundRepeat: "no-repeat",
-                        }}
                       />
                       <span
                         className="font-sans-tc text-xs leading-tight"
