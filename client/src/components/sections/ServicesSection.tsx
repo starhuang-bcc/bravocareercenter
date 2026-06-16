@@ -149,7 +149,7 @@ export default function ServicesSection() {
                       <img
                         src={job.iconUrl}
                         alt={job.title}
-                        className="w-6 h-6 object-cover"
+                        className="w-12 h-12 object-cover"
                         style={{
                           backgroundPosition: job.position,
                           backgroundSize: "300% 300%",
