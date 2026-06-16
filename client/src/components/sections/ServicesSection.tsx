@@ -140,7 +140,7 @@ export default function ServicesSection() {
                   return (
                     <div
                       key={job.title}
-                      className="flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-lg text-center transition-all hover:shadow-md"
+                      className="flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-lg text-center transition-all hover:shadow-md group cursor-pointer"
                       style={{
                         backgroundColor: "oklch(0.97 0.01 250)",
                         border: "1px solid oklch(0.90 0.02 250)",
@@ -149,7 +149,7 @@ export default function ServicesSection() {
                       <img
                         src={job.iconUrl}
                         alt={job.title}
-                        className="w-12 h-12 object-cover"
+                        className="w-12 h-12 object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                         style={{
                           backgroundPosition: job.position,
                           backgroundSize: "300% 300%",

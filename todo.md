@@ -164,3 +164,12 @@
 - [x] 更新 ServicesSection.tsx 以使用新的 icon 圖片
 - [x] TypeScript 編譯成功
 - [x] 開發伺服器 HMR 熱更新已應用
+
+
+## 職業 icon Hover 動畫效果
+- [x] 為職業卡片添加 group 類名以支持群組 hover 效果
+- [x] 為 icon 添加 hover 時的放大動畫 (scale-110)
+- [x] 設置動畫時間為 300ms，使用 ease-out 緩動
+- [x] 為卡片添加 cursor-pointer 以提示可互動
+- [x] TypeScript 編譯成功
+- [x] 開發伺服器正常運行
