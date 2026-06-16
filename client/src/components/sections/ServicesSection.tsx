@@ -149,7 +149,7 @@ export default function ServicesSection() {
                       <img
                         src={job.iconUrl}
                         alt={job.title}
-                        className="w-12 h-12 object-cover transition-transform duration-300 ease-out group-hover:scale-110"
+                        className="w-20 h-20 object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                         style={{
                           backgroundPosition: job.position,
                           backgroundSize: "300% 300%",
