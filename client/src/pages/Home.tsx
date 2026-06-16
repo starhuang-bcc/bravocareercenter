@@ -19,6 +19,7 @@ import ServicesSection from "@/components/sections/ServicesSection";
 import ProcessSection from "@/components/sections/ProcessSection";
 import AboutSection from "@/components/sections/AboutSection";
 import ContactSection from "@/components/sections/ContactSection";
+import FAQSection from "@/components/sections/FAQSection";
 import Footer from "@/components/Footer";
 import { SchemaScript } from "@/components/SchemaScript";
 import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/lib/schema";
@@ -46,6 +47,7 @@ export default function Home() {
       <ServicesSection />
       <ProcessSection />
       <AboutSection />
+      <FAQSection />
       <ContactSection />
       <Footer />
     </div>
