@@ -135,6 +135,13 @@
 - [ ] 在 Google Search Console 中提交更新的 Sitemap
 - [ ] 等待 Google 重新抓取和索引（24-48 小時）
 
+## 背景圖片文字隱藏
+- [x] 隱藏 Hero 區域右上角的「HUMAN DYNAMICS」英文字母
+  - 添加白色漸層覆蓋層
+  - 使用 linear-gradient(to left, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 20%, transparent 50%)
+  - 從右上角向左漸層透明，有效遮擋英文文字
+  - 已驗證並部署到生產環境
+
 
 ## 後台管理功能增強 - 批量刪除
 - [x] 實現後端批量刪除接口 (contact.deleteMultiple)
@@ -192,3 +199,8 @@
 - 點擊問題時展開回答，再次點擊時收起
 - 所有測試通過 (12 tests passed)
 - 放置在联繁表單上方
+
+## 待完成項目
+- [ ] 在 Google Search Console 中設置首選域名為 www.bravocareercenter.com
+- [ ] 在 Google Search Console 中提交更新的 Sitemap
+- [ ] 等待 Google 重新抓取和索引（24-48 小時）
