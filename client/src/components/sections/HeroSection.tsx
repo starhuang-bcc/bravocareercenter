@@ -41,6 +41,14 @@ export default function HeroSection() {
             "linear-gradient(105deg, rgba(27,63,110,0.82) 0%, rgba(27,63,110,0.65) 45%, rgba(27,63,110,0.15) 75%, transparent 100%)",
         }}
       />
+      {/* Right-side overlay to hide HUMAN DYNAMICS text */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(to left, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 20%, transparent 50%)",
+          pointerEvents: "none",
+        }}
+      />
 
       {/* Content */}
       <div className="container relative z-10 pt-24 pb-16">
