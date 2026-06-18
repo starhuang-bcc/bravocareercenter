@@ -31,7 +31,7 @@ export default function HeroSection() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-no-repeat"
-        style={{ backgroundImage: `url(${HERO_IMAGE})`, backgroundPosition: "left center" }}
+        style={{ backgroundImage: `url(${HERO_IMAGE})`, backgroundPosition: "30% center" }}
       />
       {/* Overlay: left-side gradient for text readability */}
       <div
