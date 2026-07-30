@@ -4,7 +4,7 @@
  */
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const ABOUT_IMG = "/manus-storage/license-certificate-2024_85d21ea2.jpg";
+const ABOUT_IMG = "/manus-storage/license-certificate-hires_2ae0bbd4.png";
 
 const milestones = [
   { num: "10+", label: "年深耕經驗" },
