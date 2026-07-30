@@ -35,8 +35,8 @@ export default function AboutSection() {
             <img
               src={ABOUT_IMG}
               alt="築夢人生涯諮詢品牌故事"
-              className="relative z-10 w-full rounded-2xl object-cover shadow-lg"
-              style={{ aspectRatio: "4/3" }}
+              className="relative z-10 w-full rounded-2xl object-contain shadow-lg bg-white"
+              style={{ aspectRatio: "9/16" }}
             />
             {/* Floating badge */}
             <div
