@@ -169,8 +169,27 @@ export function ConsultationDialog({
               <div className="rounded-2xl bg-[#f3f5f8] p-5 sm:p-6 space-y-2.5 font-sans-tc text-sm sm:text-base text-[#525d6b]">
                 <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢時間：</strong><span>60 分鐘</span></p>
                 <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢費用：</strong><span>線上 $800／次；現場 $1,000／次</span></p>
-                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">付款方式：</strong><span>諮詢後現場付款</span></p>
-                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢地點：</strong><span>台北市大安區復興南路二段237號13樓</span></p>
+                <p className="flex flex-wrap items-center gap-x-2">
+                  <strong className="font-semibold text-[#172033]">付款方式：</strong>
+                  <span>{form.consultationMode === "online" ? "諮詢後付款" : "諮詢後現場付款"}</span>
+                </p>
+                <p className="flex flex-wrap items-center gap-x-2">
+                  <strong className="font-semibold text-[#172033]">諮詢地點：</strong>
+                  <span>{form.consultationMode === "online" ? "Google Meet" : "台北市大安區復興南路二段237號13樓"}</span>
+                </p>
+                {form.consultationMode === "online" && (
+                  <div className="pt-2">
+                    <a
+                      href={consultationBookingLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-[#b9cdea] bg-white px-4 py-2.5 font-sans-tc text-sm font-bold text-[#1f5db6] shadow-2xs transition-all hover:bg-[#f8fbff] hover:shadow-xs"
+                    >
+                      諮詢後付款連結
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* Booking Form */}
