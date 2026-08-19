@@ -5,6 +5,7 @@
  */
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { consultationLogoUrl } from "@shared/consultation";
 
 const navItems = [
   { label: "服務特色", href: "#features" },
@@ -47,7 +48,7 @@ export default function Navbar() {
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
         >
           <img
-            src="/manus-storage/bravo-logo_76062bf7.webp"
+            src={consultationLogoUrl}
             alt="Bravo Career Center Logo"
             className="h-10 lg:h-12 w-auto"
           />

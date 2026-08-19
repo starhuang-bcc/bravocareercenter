@@ -200,9 +200,7 @@ export default function ContactSection() {
               </h4>
               <div className="flex flex-col gap-2">
                 <a
-                  href="https://forms.gle/YTYE3Lu5bnJncteGA"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/consultation"
                   className="font-sans-tc text-sm px-4 py-2.5 rounded-lg text-center font-medium transition-all duration-200 hover:opacity-90"
                   style={{
                     backgroundColor: "oklch(0.62 0.15 45)",

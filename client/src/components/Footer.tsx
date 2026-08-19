@@ -5,7 +5,9 @@
  */
 import { useState } from "react";
 import { Phone, Mail, ExternalLink } from "lucide-react";
+import { Link } from "wouter";
 import PrivacyModal from "./PrivacyModal";
+import { consultationLogoUrl } from "@shared/consultation";
 
 const talentServiceLinks = [
   {
@@ -38,7 +40,7 @@ const talentServiceLinks = [
 const careerLinks = [
   {
     label: "預約生涯諮詢",
-    href: "https://forms.gle/YTYE3Lu5bnJncteGA",
+    href: "/consultation",
   },
   {
     label: "免費生涯測驗",
@@ -64,7 +66,7 @@ export default function Footer() {
             <div className="lg:col-span-1">
               <div className="mb-4 flex items-center gap-2">
                 <img
-                  src="/manus-storage/bravo-logo_76062bf7.webp"
+                  src={consultationLogoUrl}
                   alt="Bravo Career Center Logo"
                   className="h-12 w-auto"
                 />
@@ -139,16 +141,26 @@ export default function Footer() {
               <ul className="flex flex-col gap-2">
                 {careerLinks.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"
-                      style={{ color: "rgba(255,255,255,0.55)" }}
-                    >
-                      {link.label}
-                      <ExternalLink size={10} className="flex-shrink-0 opacity-60" />
-                    </a>
+                    {link.href.startsWith("/") ? (
+                      <Link
+                        href={link.href}
+                        className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"
+                        style={{ color: "rgba(255,255,255,0.55)" }}
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"
+                        style={{ color: "rgba(255,255,255,0.55)" }}
+                      >
+                        {link.label}
+                        <ExternalLink size={10} className="flex-shrink-0 opacity-60" />
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
