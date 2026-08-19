@@ -34,3 +34,6 @@ Logo 修正後重新執行 Vitest：4 個測試檔、15 個測試全部通過。
 - `/admin` 登入頁可正常載入密碼欄位與登入按鈕。
 - 使用已設定的新密碼送出後，成功導向 `/submissions` 聯絡表單提交管理頁，確認前端與後端密碼驗證串接有效。
 - 後台頁面顯示目前共有 0 條提交記錄；本次驗證未新增或修改任何資料。
+
+## 2026-08-19 最新 DOM 回歸檢查
+目前開發預覽頁面 `/consultation` 已呈現卡片式預約介面。DOM 檢查結果顯示兩張服務卡片分別為「職涯諮詢」與「築夢諮詢」，第一張預設 `aria-pressed=true`、第二張為 `false`；付款連結為 `https://forms.gle/YTYE3Lu5bnJncteGA`。頁面內 4 個 Logo 圖片均載入同一個 `/manus-storage/bravo-logo-icon_d5e91661.webp` 去背資產，原生寬度為 591；桌面 viewport 寬度為 1280px，頁面無水平溢位。

@@ -3433,3 +3433,8 @@
 - [ ] 在 Google Search Console 中設置首選域名為 www.bravocareercenter.com
 - [ ] 在 Google Search Console 中提交更新的 Sitemap
 - [ ] 等待 Google 重新抓取和索引（24-48 小時）
+
+## 2026-08-19 預約生涯諮詢設計確認
+- [x] 再次確認預約生涯諮詢採用參考圖卡片式設計，包含職涯諮詢與築夢諮詢服務卡片
+- [x] 再次確認預約頁面小圖統一使用透明去背 Bravo Career Center Logo
+- [x] 完成預約頁面桌面與手機版視覺回歸、互動與 Logo 載入測試
