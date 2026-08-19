@@ -4,6 +4,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { notifyOwner } from "./_core/notification";
 import { ENV } from "./_core/env";
+import { sendEmail } from "./_core/emailService";
 import {
   createContactSubmission,
   getDefaultReplyTemplate,
@@ -293,23 +294,34 @@ ${replyContent}
         }
 
         let notified = false;
+        const emailContent = [
+          `**新預約申請通知**`,
+          ``,
+          `**服務項目**：${service}`,
+          `**姓名**：${input.name}`,
+          `**Email**：${input.email}`,
+          `**電話**：${input.phone}`,
+          `**諮詢方式**：${mode}`,
+          `**偏好時段**：${input.preferredTimes.join("、")}`,
+          `**討論主題**：${input.message || "未填寫"}`,
+          `**申請編號**：${created.id}`,
+        ].join("\n");
+
         try {
+          // Send email to career@bravocareercenter.com
+          await sendEmail({
+            to: "career@bravocareercenter.com",
+            subject: `新的${service}預約申請 - ${input.name}`,
+            content: emailContent,
+          });
+
           notified = await notifyOwner({
             title: `新的${service}預約申請 - ${input.name}`,
-            content: [
-              `姓名：${input.name}`,
-              `Email：${input.email}`,
-              `電話：${input.phone}`,
-              `服務：${service}`,
-              `方式：${mode}`,
-              `偏好時段：${input.preferredTimes.join("、")}`,
-              `討論主題：${input.message || "未填寫"}`,
-              `申請編號：${created.id}`,
-            ].join("\n"),
+            content: emailContent,
             toOpenId: ENV.ownerOpenId || undefined,
           });
         } catch (error) {
-          console.error("[Consultations] Failed to notify owner:", error);
+          console.error("[Consultations] Failed to send notification or email:", error);
         }
 
         return { success: true, requestId: created.id, notified } as const;

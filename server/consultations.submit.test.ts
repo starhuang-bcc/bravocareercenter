@@ -2,13 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
-const { createConsultationRequest, notifyOwner } = vi.hoisted(() => ({
+const { createConsultationRequest, notifyOwner, sendEmail } = vi.hoisted(() => ({
   createConsultationRequest: vi.fn(async (request: Record<string, unknown>) => ({
     id: 42,
     ...request,
     createdAt: new Date(),
   })),
   notifyOwner: vi.fn(async () => true),
+  sendEmail: vi.fn(async () => true),
 }));
 
 vi.mock("./db", async () => {
@@ -17,6 +18,7 @@ vi.mock("./db", async () => {
 });
 
 vi.mock("./_core/notification", () => ({ notifyOwner }));
+vi.mock("./_core/emailService", () => ({ sendEmail }));
 
 type PublicContext = Omit<TrpcContext, "user"> & { user: null };
 
@@ -53,6 +55,12 @@ describe("consultations.submit", () => {
         consultationMode: "online",
         preferredTime: "平日晚上 18:00–21:00",
         status: "new",
+      }),
+    );
+    expect(sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: "career@bravocareercenter.com",
+        subject: expect.stringContaining("預約申請"),
       }),
     );
     expect(notifyOwner).toHaveBeenCalledOnce();
