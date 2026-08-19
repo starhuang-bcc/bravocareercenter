@@ -1,5 +1,6 @@
 import { eq, desc, or, and, like, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import * as schema from "../drizzle/schema";
 import {
   InsertUser,
   users,
@@ -12,6 +13,8 @@ import {
   replyTemplates,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
+
+export { consultationRequests, contactSubmissions, replyTemplates, users };
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -113,7 +116,7 @@ export async function createContactSubmission(
 
   try {
     const result = await db.insert(contactSubmissions).values(submission);
-    const id = Number((result as any).insertId);
+    const id = Number((result as any).insertId || (result as any)?.[0]?.insertId);
     if (!id) return null;
 
     const created = await db
@@ -143,7 +146,7 @@ export async function createConsultationRequest(
 
   try {
     const result = await db.insert(consultationRequests).values(request);
-    const id = Number((result as any).insertId);
+    const id = Number((result as any).insertId || (result as any)?.[0]?.insertId);
     if (!id) return null;
 
     const created = await db
