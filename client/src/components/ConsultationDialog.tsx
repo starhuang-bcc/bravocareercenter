@@ -166,11 +166,11 @@ export function ConsultationDialog({
               </div>
 
               {/* Consultation Details Card */}
-              <div className="rounded-2xl bg-[#f3f5f8] p-6 space-y-3 font-sans-tc text-base text-[#606975]">
-                <p><strong className="text-[#172033]">諮詢時間：</strong>60 分鐘</p>
-                <p><strong className="text-[#172033]">諮詢費用：</strong>線上 $800／次；現場 $1,000／次</p>
-                <p><strong className="text-[#172033]">付款方式：</strong>諮詢後現場付款</p>
-                <p><strong className="text-[#172033]">諮詢地點：</strong>台北市大安區復興南路二段237號13樓</p>
+              <div className="rounded-2xl bg-[#f3f5f8] p-5 sm:p-6 space-y-2.5 font-sans-tc text-sm sm:text-base text-[#525d6b]">
+                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢時間：</strong><span>60 分鐘</span></p>
+                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢費用：</strong><span>線上 $800／次；現場 $1,000／次</span></p>
+                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">付款方式：</strong><span>諮詢後現場付款</span></p>
+                <p className="flex flex-wrap items-center gap-x-2"><strong className="font-semibold text-[#172033]">諮詢地點：</strong><span>台北市大安區復興南路二段237號13樓</span></p>
               </div>
 
               {/* Booking Form */}
@@ -185,9 +185,9 @@ export function ConsultationDialog({
                   });
                 }}
               >
-                <fieldset className="space-y-2">
-                  <legend className="text-sm font-semibold text-[#172033]">選擇諮詢方式</legend>
-                  <div className="grid grid-cols-2 gap-2">
+                <fieldset className="space-y-2.5">
+                  <legend className="text-sm font-bold tracking-wide text-[#172033]">選擇諮詢方式</legend>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {(["online", "in_person"] as const).map((mode) => {
                       const selected = form.consultationMode === mode;
                       return (
@@ -196,9 +196,9 @@ export function ConsultationDialog({
                           type="button"
                           aria-pressed={selected}
                           onClick={() => updateForm("consultationMode", mode)}
-                          className={`rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#185abc] ${
+                          className={`rounded-xl border px-4 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#185abc] ${
                             selected
-                              ? "border-[#2563c7] bg-[#2563c7] text-white"
+                              ? "border-[#2563c7] bg-[#2563c7] text-white shadow-xs"
                               : "border-[#dbe2ea] bg-white text-[#4e5968] hover:border-[#b8c8dc]"
                           }`}
                         >
@@ -209,23 +209,26 @@ export function ConsultationDialog({
                   </div>
                 </fieldset>
 
-                <fieldset className="space-y-2">
-                  <legend className="text-sm font-semibold text-[#172033]">偏好諮詢時段</legend>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                <fieldset className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <legend className="text-sm font-bold tracking-wide text-[#172033]">偏好諮詢時段</legend>
+                    <span className="text-xs text-[#717b88]">可複選</span>
+                  </div>
+                  <div className="grid gap-2.5 sm:grid-cols-2">
                     {TIMES.map((time) => {
                       const checked = form.preferredTimes.includes(time);
                       return (
                         <label
                           key={time}
-                          className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-colors ${
-                            checked ? "border-[#b8c8dc] bg-[#f7faff] text-[#1f5db6]" : "border-[#dbe2ea] bg-white text-[#5e6978]"
+                          className={`flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-3 text-sm font-medium transition-colors ${
+                            checked ? "border-[#2563c7] bg-[#f2f7ff] text-[#1f5db6] shadow-xs" : "border-[#dbe2ea] bg-white text-[#525d6b] hover:border-[#b8c8dc]"
                           }`}
                         >
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={() => toggleTime(time)}
-                            className="size-4 accent-[#2563c7]"
+                            className="size-4.5 accent-[#2563c7] rounded-sm"
                           />
                           <span>{time}</span>
                         </label>
@@ -251,16 +254,17 @@ export function ConsultationDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="consultation-message">想討論的主題（選填）</Label>
+                  <Label htmlFor="consultation-message" className="text-sm font-bold text-[#172033]">想討論的主題（選填）</Label>
                   <Textarea
                     id="consultation-message"
                     placeholder="例如：選擇科系、轉職方向、生涯規劃"
+                    className="min-h-[110px] resize-y text-sm leading-relaxed"
                     value={form.message}
                     onChange={(event) => updateForm("message", event.target.value)}
                   />
                 </div>
 
-                <p className="text-xs text-[#6e7785]">
+                <p className="pt-1 text-xs leading-relaxed text-[#717b88]">
                   送出代表您同意 Bravo Career Center 為安排諮詢所需而使用本表單資料。
                 </p>
 
