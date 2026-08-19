@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import { notifyOwner } from "./notification";
-import { ENV } from "./env";
 
 export type EmailPayload = {
   to: string;
@@ -9,7 +8,8 @@ export type EmailPayload = {
 };
 
 /**
- * Sends a real email using Gmail SMTP (nodemailer) and also records/notifies via platform notification.
+ * Sends a real email using Gmail SMTP (nodemailer) with star.huang@bravocareercenter.com as auth user
+ * and career@bravocareercenter.com as sender/recipient.
  * Returns `true` if successful.
  */
 export async function sendEmail(payload: EmailPayload): Promise<boolean> {
@@ -20,13 +20,14 @@ export async function sendEmail(payload: EmailPayload): Promise<boolean> {
 
   let smtpSuccess = false;
   const smtpPass = process.env.SMTP_PASS;
+  const isTest = process.env.NODE_ENV === "test";
 
-  if (smtpPass) {
+  if (smtpPass && !isTest) {
     try {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "career@bravocareercenter.com",
+          user: "star.huang@bravocareercenter.com",
           pass: smtpPass,
         },
       });
@@ -39,13 +40,18 @@ export async function sendEmail(payload: EmailPayload): Promise<boolean> {
         html: `<div style="font-family: sans-serif; line-height: 1.6; color: #333;">${payload.content.replace(/\n/g, "<br>")}</div>`,
       });
 
-      console.log(`[Email] Successfully sent SMTP email to ${payload.to}`);
+      console.log(`[Email] Successfully sent SMTP email to ${payload.to} via star.huang`);
       smtpSuccess = true;
     } catch (error) {
       console.error("[Email] Failed to send SMTP email:", error);
     }
   } else {
-    console.warn("[Email] SMTP_PASS not configured, skipping direct SMTP send");
+    if (isTest) {
+      console.log(`[Email] Test environment detected, simulated sending email to ${payload.to}`);
+      smtpSuccess = true;
+    } else {
+      console.warn("[Email] SMTP_PASS not configured, skipping direct SMTP send");
+    }
   }
 
   // Always also notify via platform notification as a reliable fallback/record
@@ -65,5 +71,5 @@ ${payload.content}
     console.error("[Email] Failed to notify owner fallback:", error);
   }
 
-  return smtpSuccess || true; // Return true if either succeeded or recorded
+  return smtpSuccess || true;
 }
