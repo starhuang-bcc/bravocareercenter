@@ -169,19 +169,8 @@ export function ConsultationDialog({
               <div className="rounded-2xl bg-[#f3f5f8] p-6 space-y-3 font-sans-tc text-base text-[#606975]">
                 <p><strong className="text-[#172033]">諮詢時間：</strong>60 分鐘</p>
                 <p><strong className="text-[#172033]">諮詢費用：</strong>線上 $800／次；現場 $1,000／次</p>
-                <p><strong className="text-[#172033]">付款方式：</strong>諮詢後付款</p>
-                <p><strong className="text-[#172033]">諮詢地點：</strong>{form.consultationMode === "online" ? "Google Meet" : "現場晤談室"}</p>
-                <div className="pt-2">
-                  <a
-                    href={consultationBookingLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-[#b9cdea] bg-white px-4 py-2.5 font-sans-tc text-sm font-bold text-[#1f5db6] shadow-2xs transition-all hover:bg-[#f8fbff] hover:shadow-xs"
-                  >
-                    諮詢後付款連結
-                    <ArrowUpRight size={16} aria-hidden="true" />
-                  </a>
-                </div>
+                <p><strong className="text-[#172033]">付款方式：</strong>諮詢後現場付款</p>
+                <p><strong className="text-[#172033]">諮詢地點：</strong>台北市大安區復興南路二段237號13樓</p>
               </div>
 
               {/* Booking Form */}
@@ -213,7 +202,7 @@ export function ConsultationDialog({
                               : "border-[#dbe2ea] bg-white text-[#4e5968] hover:border-[#b8c8dc]"
                           }`}
                         >
-                          {mode === "online" ? "線上（Google Meet）" : "現場"}
+                          {mode === "online" ? "線上・Google Meet" : "現場・台北大安"}
                         </button>
                       );
                     })}
@@ -263,8 +252,17 @@ export function ConsultationDialog({
 
                 <div className="space-y-2">
                   <Label htmlFor="consultation-message">想討論的主題（選填）</Label>
-                  <Textarea id="consultation-message" value={form.message} onChange={(event) => updateForm("message", event.target.value)} />
+                  <Textarea
+                    id="consultation-message"
+                    placeholder="例如：選擇科系、轉職方向、生涯規劃"
+                    value={form.message}
+                    onChange={(event) => updateForm("message", event.target.value)}
+                  />
                 </div>
+
+                <p className="text-xs text-[#6e7785]">
+                  送出代表您同意 Bravo Career Center 為安排諮詢所需而使用本表單資料。
+                </p>
 
                 <Button className="w-full bg-[#e7772c] text-white hover:bg-[#d76720]" type="submit" disabled={submit.isPending || form.preferredTimes.length === 0}>
                   {submit.isPending ? "送出中…" : "送出預約申請"}
