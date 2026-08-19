@@ -259,7 +259,7 @@ ${replyContent}
           name: z.string().trim().min(2, "請填寫姓名").max(128),
           email: z.string().trim().email("請填寫有效 Email").max(320),
           phone: z.string().trim().min(6, "請填寫有效電話").max(32),
-          serviceType: z.enum(["career", "dream"]),
+          serviceType: z.enum(["career", "bravo"]),
           consultationMode: z.enum(["online", "in_person"]),
           preferredTimes: z
             .array(
@@ -282,7 +282,7 @@ ${replyContent}
           name: input.name,
           email: input.email,
           phone: input.phone,
-          serviceType: input.serviceType,
+          serviceType: input.serviceType as "career" | "bravo",
           consultationMode: input.consultationMode,
           preferredTime: input.preferredTimes.join("、"),
           message: input.message || null,

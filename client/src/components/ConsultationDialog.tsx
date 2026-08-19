@@ -199,7 +199,7 @@ export function ConsultationDialog({
                   event.preventDefault();
                   submit.mutate({
                     ...form,
-                    serviceType: form.serviceType === "career" ? "career" : "dream",
+                    serviceType: form.serviceType === "career" ? "career" : "bravo",
                     message: form.message || undefined,
                   });
                 }}

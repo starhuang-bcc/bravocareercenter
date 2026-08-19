@@ -1,0 +1,1 @@
+ALTER TABLE `consultation_requests` MODIFY COLUMN `serviceType` enum('career','bravo') NOT NULL DEFAULT 'career';

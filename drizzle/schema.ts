@@ -54,7 +54,7 @@ export const consultationRequests = mysqlTable("consultation_requests", {
   name: varchar("name", { length: 128 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 32 }).notNull(),
-  serviceType: mysqlEnum("serviceType", ["career", "dream"]).default("career").notNull(),
+  serviceType: mysqlEnum("serviceType", ["career", "bravo"]).default("career").notNull(),
   consultationMode: mysqlEnum("consultationMode", ["online", "in_person"]).default("online").notNull(),
   preferredTime: varchar("preferredTime", { length: 512 }).notNull(),
   message: text("message"),
