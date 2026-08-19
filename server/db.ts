@@ -1,6 +1,16 @@
 import { eq, desc, or, and, like, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, contactSubmissions, InsertContactSubmission, ContactSubmission, replyTemplates } from "../drizzle/schema";
+import {
+  InsertUser,
+  users,
+  contactSubmissions,
+  InsertContactSubmission,
+  ContactSubmission,
+  consultationRequests,
+  InsertConsultationRequest,
+  ConsultationRequest,
+  replyTemplates,
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -115,6 +125,36 @@ export async function createContactSubmission(
     return created.length > 0 ? created[0] : null;
   } catch (error) {
     console.error("[Database] Failed to create contact submission:", error);
+    throw error;
+  }
+}
+
+/**
+ * Create a career consultation request from the booking dialog.
+ */
+export async function createConsultationRequest(
+  request: InsertConsultationRequest,
+): Promise<ConsultationRequest | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create consultation request: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db.insert(consultationRequests).values(request);
+    const id = Number((result as any).insertId);
+    if (!id) return null;
+
+    const created = await db
+      .select()
+      .from(consultationRequests)
+      .where(eq(consultationRequests.id, id))
+      .limit(1);
+
+    return created.length > 0 ? created[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create consultation request:", error);
     throw error;
   }
 }

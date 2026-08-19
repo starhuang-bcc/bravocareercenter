@@ -8,6 +8,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Send, MapPin, Phone, Mail, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import ConsultationDialog from "@/components/ConsultationDialog";
 
 const CONTACT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663726608645/KmSn4imp7E3CjLNAtUxPWq/contact-bg-4YtG742zfRZUz29dduaPLP.webp";
 
@@ -199,16 +200,9 @@ export default function ContactSection() {
                 生涯諮詢服務
               </h4>
               <div className="flex flex-col gap-2">
-                <a
-                  href="/consultation"
-                  className="font-sans-tc text-sm px-4 py-2.5 rounded-lg text-center font-medium transition-all duration-200 hover:opacity-90"
-                  style={{
-                    backgroundColor: "oklch(0.62 0.15 45)",
-                    color: "white",
-                  }}
-                >
-                  預約生涯諮詢
-                </a>
+                <ConsultationDialog
+                  className="w-full px-4 py-2.5 text-center font-medium transition-all duration-200 hover:opacity-90"
+                />
                 <a
                   href="https://bravocareercenter.github.io/BCCSurvey/#/"
                   target="_blank"

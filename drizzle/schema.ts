@@ -47,6 +47,25 @@ export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
 
 /**
+ * Career consultation requests submitted from the booking dialog
+ */
+export const consultationRequests = mysqlTable("consultation_requests", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 32 }).notNull(),
+  serviceType: mysqlEnum("serviceType", ["career", "dream"]).default("career").notNull(),
+  consultationMode: mysqlEnum("consultationMode", ["online", "in_person"]).default("online").notNull(),
+  preferredTime: varchar("preferredTime", { length: 512 }).notNull(),
+  message: text("message"),
+  status: mysqlEnum("status", ["new", "contacted", "scheduled", "closed"]).default("new").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ConsultationRequest = typeof consultationRequests.$inferSelect;
+export type InsertConsultationRequest = typeof consultationRequests.$inferInsert;
+
+/**
  * Reply templates table
  * Stores predefined reply templates for quick responses
  */

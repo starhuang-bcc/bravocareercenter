@@ -8,6 +8,7 @@ import { Phone, Mail, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
 import PrivacyModal from "./PrivacyModal";
 import { consultationLogoUrl } from "@shared/consultation";
+import ConsultationDialog from "./ConsultationDialog";
 
 const talentServiceLinks = [
   {
@@ -141,7 +142,9 @@ export default function Footer() {
               <ul className="flex flex-col gap-2">
                 {careerLinks.map((link) => (
                   <li key={link.label}>
-                    {link.href.startsWith("/") ? (
+                    {link.label === "預約生涯諮詢" ? (
+                      <ConsultationDialog compact />
+                    ) : link.href.startsWith("/") ? (
                       <Link
                         href={link.href}
                         className="font-sans-tc text-xs flex items-center gap-1 transition-colors duration-200 hover:text-white"

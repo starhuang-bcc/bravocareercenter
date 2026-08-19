@@ -8,6 +8,7 @@ import {
   createContactSubmission,
   getDefaultReplyTemplate,
   getContactSubmissions,
+  createConsultationRequest,
 } from "./db";
 import { getDb } from "./db";
 import { eq } from "drizzle-orm";
@@ -247,6 +248,71 @@ ${replyContent}
           success,
           message: success ? "訊息已送出，感謝您的聯繫！" : "訊息發送失敗，請稍後重試。",
         };
+      }),
+  }),
+
+  consultations: router({
+    submit: publicProcedure
+      .input(
+        z.object({
+          name: z.string().trim().min(2, "請填寫姓名").max(128),
+          email: z.string().trim().email("請填寫有效 Email").max(320),
+          phone: z.string().trim().min(6, "請填寫有效電話").max(32),
+          serviceType: z.enum(["career", "dream"]),
+          consultationMode: z.enum(["online", "in_person"]),
+          preferredTimes: z
+            .array(
+              z.enum([
+                "平日白天 10:00–17:00",
+                "平日晚上 18:00–21:00",
+                "假日白天 10:00–17:00",
+                "假日晚上 18:00–21:00",
+              ]),
+            )
+            .min(1, "請至少選擇一個偏好諮詢時段")
+            .max(4),
+          message: z.string().trim().max(2000).optional(),
+        }),
+      )
+      .mutation(async ({ input }) => {
+        const service = input.serviceType === "career" ? "職涯諮詢" : "築夢諮詢";
+        const mode = input.consultationMode === "online" ? "線上（Google Meet）" : "現場諮詢";
+        const created = await createConsultationRequest({
+          name: input.name,
+          email: input.email,
+          phone: input.phone,
+          serviceType: input.serviceType,
+          consultationMode: input.consultationMode,
+          preferredTime: input.preferredTimes.join("、"),
+          message: input.message || null,
+          status: "new",
+        });
+
+        if (!created) {
+          throw new Error("系統暫時無法保存預約，請稍後再試");
+        }
+
+        let notified = false;
+        try {
+          notified = await notifyOwner({
+            title: `新的${service}預約申請 - ${input.name}`,
+            content: [
+              `姓名：${input.name}`,
+              `Email：${input.email}`,
+              `電話：${input.phone}`,
+              `服務：${service}`,
+              `方式：${mode}`,
+              `偏好時段：${input.preferredTimes.join("、")}`,
+              `討論主題：${input.message || "未填寫"}`,
+              `申請編號：${created.id}`,
+            ].join("\n"),
+            toOpenId: ENV.ownerOpenId || undefined,
+          });
+        } catch (error) {
+          console.error("[Consultations] Failed to notify owner:", error);
+        }
+
+        return { success: true, requestId: created.id, notified } as const;
       }),
   }),
 });
