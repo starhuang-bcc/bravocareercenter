@@ -3444,3 +3444,7 @@
 - [x] 依附件 ConsultationDialog 風格建立服務、方式、時段與聯絡資料表單
 - [x] 將預約資料送出流程接入現有 tRPC、資料庫與通知機制
 - [x] 完成彈窗關閉、鍵盤操作、成功與錯誤狀態及桌面/手機版驗證
+
+## GitHub 同步
+- [ ] 檢查並同步最新程式碼至 https://github.com/starhuang-bcc/bravocareercenter.git，排除依賴、建置產物與敏感環境檔
+- [ ] 驗證 GitHub 遠端分支與最新提交一致
