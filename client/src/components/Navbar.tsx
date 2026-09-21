@@ -44,13 +44,13 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#"
-          className="flex items-center gap-2 leading-tight"
+          className="flex items-center gap-1 leading-tight"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
         >
           <img
             src={consultationLogoUrl}
             alt="Bravo Career Center Logo"
-            className="h-10 lg:h-12 w-auto"
+            className="h-12 lg:h-14 w-auto"
           />
           <div className="hidden sm:flex flex-col">
             <span
