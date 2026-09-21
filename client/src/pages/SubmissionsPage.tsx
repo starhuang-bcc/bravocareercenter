@@ -43,6 +43,7 @@ export default function SubmissionsPage() {
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
 
   const deleteMultipleMutation = trpc.contact.deleteMultiple.useMutation();
+  const markReadMutation = trpc.contact.markRead.useMutation();
 
   // 檢查登錄狀態並獲取密碼
   useEffect(() => {
@@ -136,6 +137,24 @@ export default function SubmissionsPage() {
       newSelected.add(id);
     }
     setSelectedIds(newSelected);
+  };
+
+  const handleToggleDetails = async (submission: ContactSubmission) => {
+    const isOpening = selectedId !== submission.id;
+    setSelectedId(isOpening ? submission.id : null);
+
+    if (isOpening && submission.status === "new") {
+      try {
+        await markReadMutation.mutateAsync({ id: submission.id, password });
+        setSubmissions((current) =>
+          current.map((item) =>
+            item.id === submission.id ? { ...item, status: "read" } : item
+          )
+        );
+      } catch (error) {
+        console.error("Failed to mark submission as read:", error);
+      }
+    }
   };
 
   const handleDelete = async () => {
@@ -359,11 +378,7 @@ export default function SubmissionsPage() {
                 )}
 
                 <div
-                  onClick={() =>
-                    setSelectedId(
-                      selectedId === submission.id ? null : submission.id
-                    )
-                  }
+                  onClick={() => handleToggleDetails(submission)
                   className="px-6 py-3 bg-gray-50 border-t text-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer font-medium"
                 >
                   {selectedId === submission.id ? "隱藏詳細信息" : "查看詳細信息"}
