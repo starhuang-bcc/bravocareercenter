@@ -25,10 +25,16 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
+      const databaseUrl = new URL(process.env.DATABASE_URL);
       const pool = mysql.createPool({
-        uri: process.env.DATABASE_URL,
+        host: databaseUrl.hostname,
+        port: Number(databaseUrl.port || 4000),
+        user: decodeURIComponent(databaseUrl.username),
+        password: decodeURIComponent(databaseUrl.password),
+        database: databaseUrl.pathname.replace(/^\//, ""),
         ssl: {
           minVersion: "TLSv1.2",
+          rejectUnauthorized: true,
         },
       });
       _db = drizzle(pool);
