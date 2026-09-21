@@ -307,10 +307,36 @@ ${input.message}
             content: emailContent,
           });
         } catch (error) {
-          console.error("[Consultations] Failed to send email:", error);
+          console.error("[Consultations] Failed to send company notification email:", error);
         }
 
-        return { success: true, requestId: created.id, notified } as const;
+        const confirmationContent = [
+          `${input.name} 您好：`,
+          ``,
+          `感謝您預約 BRAVO Career Center 的${service}，我們已收到您的預約申請。`,
+          ``,
+          `服務項目：${service}`,
+          `諮詢方式：${mode}`,
+          `偏好時段：${input.preferredTimes.join("、")}`,
+          `申請編號：${created.id}`,
+          ``,
+          `我們將於 2 個工作天內依您留下的聯絡方式回覆安排，謝謝您。`,
+          ``,
+          `BRAVO Career Center`,
+        ].join("\n");
+
+        let confirmationSent = false;
+        try {
+          confirmationSent = await sendEmail({
+            to: input.email,
+            subject: "BRAVO Career Center - 預約申請已收到",
+            content: confirmationContent,
+          });
+        } catch (error) {
+          console.error("[Consultations] Failed to send applicant confirmation email:", error);
+        }
+
+        return { success: true, requestId: created.id, notified, confirmationSent } as const;
       }),
   }),
 });
