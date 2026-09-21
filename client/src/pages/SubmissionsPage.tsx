@@ -378,7 +378,7 @@ export default function SubmissionsPage() {
                 )}
 
                 <div
-                  onClick={() => handleToggleDetails(submission)
+                  onClick={() => handleToggleDetails(submission)}
                   className="px-6 py-3 bg-gray-50 border-t text-center text-sm text-blue-600 hover:text-blue-700 cursor-pointer font-medium"
                 >
                   {selectedId === submission.id ? "隱藏詳細信息" : "查看詳細信息"}
