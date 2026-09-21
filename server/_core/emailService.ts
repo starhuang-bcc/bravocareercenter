@@ -29,31 +29,10 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#039;");
 }
 
-function credentialMeta(value: string | undefined) {
-  if (value === undefined) return { present: false, length: 0, trimmedLength: 0, hasOuterWhitespace: false };
-  const trimmed = value.trim();
-  return {
-    present: value.length > 0,
-    length: value.length,
-    trimmedLength: trimmed.length,
-    hasOuterWhitespace: value !== trimmed,
-  };
-}
-
 async function getAccessToken() {
-  const rawClientId = process.env.GMAIL_CLIENT_ID;
-  const rawClientSecret = process.env.GMAIL_CLIENT_SECRET;
-  const rawRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
-
-  console.log("[Email] Gmail OAuth credential diagnostics", {
-    clientId: credentialMeta(rawClientId),
-    clientSecret: credentialMeta(rawClientSecret),
-    refreshToken: credentialMeta(rawRefreshToken),
-  });
-
-  const clientId = rawClientId?.trim();
-  const clientSecret = rawClientSecret?.trim();
-  const refreshToken = rawRefreshToken?.trim();
+  const clientId = process.env.GMAIL_CLIENT_ID?.trim();
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET?.trim();
+  const refreshToken = process.env.GMAIL_REFRESH_TOKEN?.trim();
 
   if (!clientId || !clientSecret || !refreshToken) {
     throw new Error("GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET and GMAIL_REFRESH_TOKEN are required");
