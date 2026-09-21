@@ -6,10 +6,16 @@ export type EmailPayload = {
   content: string;
 };
 
+const SMTP_USER = process.env.SMTP_USER || "star.huang@bravocareercenter.com";
+const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER;
+const REPLY_TO = process.env.COMPANY_EMAIL || "career@bravocareercenter.com";
+
 /**
- * Sends a real email using Gmail SMTP (nodemailer) with star.huang@bravocareercenter.com as auth user
- * and career@bravocareercenter.com as sender/recipient.
- * Returns `true` if successful.
+ * Sends email through Gmail SMTP.
+ *
+ * Important: authenticate and send From the same mailbox by default.
+ * Gmail/Google Workspace can reject or rewrite an unverified From alias.
+ * Replies still go to the public BRAVO mailbox via replyTo.
  */
 export async function sendEmail(payload: EmailPayload): Promise<boolean> {
   if (!payload.to || !payload.subject || !payload.content) {
@@ -17,41 +23,59 @@ export async function sendEmail(payload: EmailPayload): Promise<boolean> {
     return false;
   }
 
-  let smtpSuccess = false;
   const smtpPass = process.env.SMTP_PASS;
   const isTest = process.env.NODE_ENV === "test";
 
-  if (smtpPass && !isTest) {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "star.huang@bravocareercenter.com",
-          pass: smtpPass,
-        },
-      });
-
-      await transporter.sendMail({
-        from: '"Bravo Career Center" <career@bravocareercenter.com>',
-        to: payload.to,
-        subject: payload.subject,
-        text: payload.content,
-        html: `<div style="font-family: sans-serif; line-height: 1.6; color: #333;">${payload.content.replace(/\n/g, "<br>")}</div>`,
-      });
-
-      console.log(`[Email] Successfully sent SMTP email to ${payload.to} via star.huang`);
-      smtpSuccess = true;
-    } catch (error) {
-      console.error("[Email] Failed to send SMTP email:", error);
-    }
-  } else {
-    if (isTest) {
-      console.log(`[Email] Test environment detected, simulated sending email to ${payload.to}`);
-      smtpSuccess = true;
-    } else {
-      console.warn("[Email] SMTP_PASS not configured, skipping direct SMTP send");
-    }
+  if (isTest) {
+    console.log(`[Email] Test environment detected, simulated sending email to ${payload.to}`);
+    return true;
   }
 
-  return smtpSuccess;
+  if (!smtpPass) {
+    console.error("[Email] SMTP_PASS is not configured");
+    return false;
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: SMTP_USER,
+        pass: smtpPass,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 30000,
+    });
+
+    const info = await transporter.sendMail({
+      from: `"Bravo Career Center" <${SMTP_FROM}>`,
+      replyTo: REPLY_TO,
+      to: payload.to,
+      subject: payload.subject,
+      text: payload.content,
+      html: `<div style="font-family: sans-serif; line-height: 1.6; color: #333;">${payload.content.replace(/\n/g, "<br>")}</div>`,
+    });
+
+    console.log("[Email] SMTP send succeeded", {
+      to: payload.to,
+      messageId: info.messageId,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      response: info.response,
+    });
+    return true;
+  } catch (error: any) {
+    console.error("[Email] SMTP send failed", {
+      to: payload.to,
+      code: error?.code,
+      command: error?.command,
+      responseCode: error?.responseCode,
+      response: error?.response,
+      message: error?.message,
+    });
+    return false;
+  }
 }
