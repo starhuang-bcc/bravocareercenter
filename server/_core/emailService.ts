@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import { notifyOwner } from "./notification";
 
 export type EmailPayload = {
   to: string;
@@ -54,22 +53,5 @@ export async function sendEmail(payload: EmailPayload): Promise<boolean> {
     }
   }
 
-  // Always also notify via platform notification as a reliable fallback/record
-  try {
-    const notificationTitle = `${payload.subject}`;
-    const notificationContent = `
-**收件人**: ${payload.to}
-
-${payload.content}
-    `.trim();
-
-    await notifyOwner({
-      title: notificationTitle,
-      content: notificationContent,
-    });
-  } catch (error) {
-    console.error("[Email] Failed to notify owner fallback:", error);
-  }
-
-  return smtpSuccess || true;
+  return smtpSuccess;
 }
