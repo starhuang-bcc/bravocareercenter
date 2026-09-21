@@ -66,6 +66,22 @@ export const appRouter = router({
         
         return await getContactSubmissions(filters);
       }),
+    markRead: publicProcedure
+      .input(z.object({ id: z.number(), password: z.string() }))
+      .mutation(async ({ input }) => {
+        if (!isAdminPasswordValid(input.password)) {
+          throw new Error("密碼錯誤");
+        }
+        const db = await getDb();
+        if (!db) {
+          throw new Error("資料庫連接失敗");
+        }
+        await db
+          .update(contactSubmissions)
+          .set({ status: "read" })
+          .where(eq(contactSubmissions.id, input.id));
+        return { success: true } as const;
+      }),
     delete: publicProcedure
       .input(
         z.object({
