@@ -7,6 +7,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { BreadcrumbSchema } from "./components/BreadcrumbSchema";
 
+const EnterprisePage = lazy(() => import("./pages/EnterprisePage"));
+
 const Home = lazy(() => import("./pages/Home"));
 const ConsultationPage = lazy(() => import("./pages/ConsultationPage"));
 const SubmissionsPage = lazy(() => import("./pages/SubmissionsPage"));
@@ -25,11 +27,12 @@ function Router() {
   return (
     <Suspense fallback={<RouteLoading />}>
       <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/consultation" component={ConsultationPage} />
-      <Route path="/admin" component={AdminLoginPage} />
-      <Route path="/submissions" component={SubmissionsPage} />
-      <Route path="/404" component={NotFound} />
+        <Route path="/" component={Home} />
+        <Route path="/consultation" component={ConsultationPage} />
+        <Route path="/enterprise/login" component={EnterprisePage} />
+        <Route path="/admin" component={AdminLoginPage} />
+        <Route path="/submissions" component={SubmissionsPage} />
+        <Route path="/404" component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
       </Switch>

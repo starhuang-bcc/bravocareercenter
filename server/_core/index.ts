@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { ENV } from "./env";
+import { enterpriseRouter } from "../enterprise/routes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -54,8 +55,14 @@ async function startServer() {
       res.header("Access-Control-Allow-Origin", origin);
       res.header("Vary", "Origin");
       res.header("Access-Control-Allow-Credentials", "true");
-      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-      res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, X-Requested-With"
+      );
+      res.header(
+        "Access-Control-Allow-Methods",
+        "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      );
     }
     if (req.method === "OPTIONS") return res.sendStatus(204);
     next();
@@ -65,6 +72,7 @@ async function startServer() {
     res.status(200).json({ status: "ok", service: "bravo-career-center-api" });
   });
 
+  app.use("/api/enterprise", enterpriseRouter);
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
