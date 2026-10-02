@@ -1,17 +1,21 @@
 # BRAVO 企業人才管理平台
 
-入口 `/enterprise/login`。沿用官網 Express 服務，新增獨立 `/api/enterprise` API 與 HttpOnly session，不使用舊共用管理密碼或 Manus OAuth。
+入口 `/enterprise/login`。沿用移轉分支的前後台分離架構與 Express API 服務，新增獨立 `/api/enterprise` API 與 HttpOnly session，不使用舊共用管理密碼或 Manus OAuth。
 
 ## 部署
+
+現有 Static Site：srv-daokj9bbc2fs73ed8d5g，正式分支 render-v1.0-migration。前台需設定 `VITE_API_BASE_URL` 為既有 API Web Service 的 HTTPS URL，人才平台 fetch 使用此設定並包含 Cookie。Static Site 本身不執行 Express，不能單独提供登入與資料保存。請將本 PR 合併至 render-v1.0-migration，API 與 Static Site 都須部署此版本。
+
+Static Site 的 Build 沿用 `corepack pnpm install --frozen-lockfile && corepack pnpm vite build`，Publish Directory 為 `dist/public`。保留既有 SPA rewrite（/* → /index.html）。API 的設定如下。
 
 - Build：`corepack pnpm install --frozen-lockfile && corepack pnpm build`
 - Start：`corepack pnpm start`（不可使用只提供靜態頁面的 `server/index.ts`）
 - 沿用既有 MySQL `DATABASE_URL`。首次使用只建立 `bravo_enterprise_state`、`bravo_enterprise_sessions` 兩張新 InnoDB 表，不改既有表。資料庫帳號須有建立新表的權限。
-- `ENTERPRISE_ORIGIN` 設為企業平台實際 origin，例如 `https://www.bravocareercenter.com`，不包含結尾斜線。官網非 www 會導向 www。
+- `ENTERPRISE_ORIGIN` 設為企業平台實際 origin，例如 `https://www.bravocareercenter.com`，不包含結尾斜線。也可用逗號列出兩個官網 origin；API 保留移轉版 CORS_ORIGINS 設定。
 - `ENTERPRISE_ADMIN_EMAIL`：管理員 Email。
 - `ENTERPRISE_ADMIN_PASSWORD`：部署時安全設定，至少 12 字元。沒有預設帳密。首次登入會建立管理員，之後不會以環境變數覆蓋已建立帳號密碼。建立後可移除 bootstrap 密碼，管理員可在平台變更密碼。
 - 保留原本官網所需的其他環境變數及資料庫連線 TLS 設定；不要輸出密碼至日誌。
-- 正式環境必須以 HTTPS 服務。session 有效 8 小時，cookie 使用 Secure、HttpOnly、SameSite=Strict。
+- 正式環境必須以 HTTPS 服務。session 有效 8 小時，正式環境 cookie 使用 Secure、HttpOnly、SameSite=None，配合同源清單檢查及 credentialed CORS；本機測試使用 Strict。建議 API 使用 api.bravocareercenter.com 同站網域，避免瀏覽器封鎖第三方 Cookie。
 
 ## 使用順序
 

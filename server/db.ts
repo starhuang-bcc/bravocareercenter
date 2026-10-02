@@ -1,5 +1,6 @@
 import { eq, desc, or, and, like, gte, lte } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import * as schema from "../drizzle/schema";
 import {
   InsertUser,
@@ -16,13 +17,27 @@ import { ENV } from './_core/env';
 
 export { consultationRequests, contactSubmissions, replyTemplates, users };
 
-let _db: ReturnType<typeof drizzle> | null = null;
+let _db: MySql2Database | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
+// TiDB Cloud public endpoints require TLS; configure mysql2 explicitly so
+// production connections from Render never fall back to insecure transport.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const databaseUrl = new URL(process.env.DATABASE_URL);
+      const pool = mysql.createPool({
+        host: databaseUrl.hostname,
+        port: Number(databaseUrl.port || 4000),
+        user: decodeURIComponent(databaseUrl.username),
+        password: decodeURIComponent(databaseUrl.password),
+        database: databaseUrl.pathname.replace(/^\//, ""),
+        ssl: {
+          minVersion: "TLSv1.2",
+          rejectUnauthorized: true,
+        },
+      });
+      _db = drizzle(pool);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;

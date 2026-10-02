@@ -36,13 +36,18 @@ type State = {
   audit: { at: string; actor: string; action: string; entity: string }[];
 };
 async function api(path: string, body?: unknown) {
-  const r = await fetch("/api/enterprise/" + path, {
-    credentials: "same-origin",
-    method: body === undefined ? "GET" : "POST",
-    headers:
-      body === undefined ? undefined : { "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  const r = await fetch(
+    `${(import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "")}/api/enterprise/${path}`,
+    {
+      credentials: "include",
+      method: body === undefined ? "GET" : "POST",
+      headers:
+        body === undefined ? undefined : { "Content-Type": "application/json" },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }
+  );
+  if (!r.headers.get("content-type")?.includes("application/json"))
+    throw Error("企業平台 API 尚未連接，請聯絡 BRAVO");
   const result = await r.json();
   if (!r.ok) throw Error(result.error || "操作失敗");
   return result;

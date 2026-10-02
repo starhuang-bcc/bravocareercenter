@@ -49,7 +49,7 @@ export function isConsultationOptionId(value: string): value is ConsultationOpti
   return consultationOptions.some((option) => option.id === value);
 }
 
-export const consultationLogoUrl = "/manus-storage/bravo-logo-icon_d5e91661.webp";
+export const consultationLogoUrl = "/bravo-logo.png";
 export const consultationPageTitle = "預約生涯諮詢 | Bravo Career Center";
 export const consultationPageDescription =
   "選擇適合的職涯諮詢或築夢諮詢服務，填寫資料後，Bravo Career Center 將依您提供的聯絡方式安排諮詢。";

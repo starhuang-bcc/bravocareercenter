@@ -2,7 +2,6 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { notifyOwner } from "./_core/notification";
 import { ENV } from "./_core/env";
 import { sendEmail } from "./_core/emailService";
 import {
@@ -15,7 +14,13 @@ import { getDb } from "./db";
 import { eq } from "drizzle-orm";
 import { contactSubmissions } from "../drizzle/schema";
 
-const ADMIN_PASSWORD = "star6688";
+function isAdminPasswordValid(password?: string) {
+  if (!ENV.adminPassword) {
+    console.error("[Admin] ADMIN_PASSWORD is not configured");
+    return false;
+  }
+  return Boolean(password) && password === ENV.adminPassword;
+}
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -42,7 +47,7 @@ export const appRouter = router({
       )
       .query(async ({ input }) => {
         // Verify password for accessing submissions
-        if (!input.password || input.password !== ADMIN_PASSWORD) {
+        if (!isAdminPasswordValid(input.password)) {
           return [];
         }
 
@@ -61,6 +66,22 @@ export const appRouter = router({
         
         return await getContactSubmissions(filters);
       }),
+    markRead: publicProcedure
+      .input(z.object({ id: z.number(), password: z.string() }))
+      .mutation(async ({ input }) => {
+        if (!isAdminPasswordValid(input.password)) {
+          throw new Error("密碼錯誤");
+        }
+        const db = await getDb();
+        if (!db) {
+          throw new Error("資料庫連接失敗");
+        }
+        await db
+          .update(contactSubmissions)
+          .set({ status: "read" })
+          .where(eq(contactSubmissions.id, input.id));
+        return { success: true } as const;
+      }),
     delete: publicProcedure
       .input(
         z.object({
@@ -70,7 +91,7 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         // Verify password
-        if (input.password !== ADMIN_PASSWORD) {
+        if (!isAdminPasswordValid(input.password)) {
           throw new Error("密碼錯誤");
         }
 
@@ -105,7 +126,7 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         // Verify password
-        if (input.password !== ADMIN_PASSWORD) {
+        if (!isAdminPasswordValid(input.password)) {
           throw new Error("密碼錯誤");
         }
 
@@ -143,7 +164,7 @@ export const appRouter = router({
     verifyPassword: publicProcedure
       .input(z.object({ password: z.string() }))
       .mutation(async ({ input }) => {
-        const isValid = input.password === ADMIN_PASSWORD;
+        const isValid = isAdminPasswordValid(input.password);
         return { success: isValid };
       }),
     submit: publicProcedure
@@ -209,41 +230,29 @@ ${input.message}
           console.error("[Contact] Failed to save submission to database:", error);
         }
 
-        // Send notification to owner via Manus platform
-        let notifySuccess = false;
-        try {
-          notifySuccess = await notifyOwner({
-            title: `新聯絡表單提交 - ${categoryName}`,
-            content,
-            toOpenId: ENV.ownerOpenId || undefined,
-          });
-          console.log(`[Contact] Notification sent: ${notifySuccess}`);
-        } catch (error) {
-          console.error("[Contact] Failed to send notification:", error);
-        }
+        // Render migration: email is the primary notification path.
+        // Database persistence remains independent, so a temporary email failure does not lose the submission.
+        const ownerEmail = ENV.companyEmail || "career@bravocareercenter.com";
+        const ownerEmailSuccess = await sendEmail({
+          to: ownerEmail,
+          subject: `新聯絡表單提交 - ${categoryName}`,
+          content,
+        });
 
-        // Send auto-reply to submitter
         let autoReplySuccess = false;
         try {
           const defaultTemplate = await getDefaultReplyTemplate();
           const replyContent = defaultTemplate?.content || "感謝您的詢問，我們會盡快回覆";
-          
-          // Send auto-reply as a notification with submitter's email in content
-          autoReplySuccess = await notifyOwner({
-            title: `自動回覆已發送給 ${input.email}`,
-            content: `
-**收件人**: ${input.email}
-**主旨**: 築夢人生涯諮詢服務 - 感謝您的聯繫
-
-${replyContent}
-            `,
+          autoReplySuccess = await sendEmail({
+            to: input.email,
+            subject: "BRAVO Career Center - 感謝您的聯繫",
+            content: replyContent,
           });
-          console.log(`[Contact] Auto-reply sent: ${autoReplySuccess}`);
         } catch (error) {
-          console.error("[Contact] Failed to send auto-reply:", error);
+          console.error("[Contact] Failed to send auto-reply email:", error);
         }
 
-        const success = notifySuccess;
+        const success = ownerEmailSuccess;
 
         return {
           success,
@@ -308,23 +317,42 @@ ${replyContent}
         ].join("\n");
 
         try {
-          // Send email to career@bravocareercenter.com
-          await sendEmail({
-            to: "career@bravocareercenter.com",
+          notified = await sendEmail({
+            to: ENV.companyEmail || "career@bravocareercenter.com",
             subject: `新的${service}預約申請 - ${input.name}`,
             content: emailContent,
           });
-
-          notified = await notifyOwner({
-            title: `新的${service}預約申請 - ${input.name}`,
-            content: emailContent,
-            toOpenId: ENV.ownerOpenId || undefined,
-          });
         } catch (error) {
-          console.error("[Consultations] Failed to send notification or email:", error);
+          console.error("[Consultations] Failed to send company notification email:", error);
         }
 
-        return { success: true, requestId: created.id, notified } as const;
+        const confirmationContent = [
+          `${input.name} 您好：`,
+          ``,
+          `感謝您預約 BRAVO Career Center 的${service}，我們已收到您的預約申請。`,
+          ``,
+          `服務項目：${service}`,
+          `諮詢方式：${mode}`,
+          `偏好時段：${input.preferredTimes.join("、")}`,
+          `申請編號：${created.id}`,
+          ``,
+          `我們將於 2 個工作天內依您留下的聯絡方式回覆安排，謝謝您。`,
+          ``,
+          `BRAVO Career Center`,
+        ].join("\n");
+
+        let confirmationSent = false;
+        try {
+          confirmationSent = await sendEmail({
+            to: input.email,
+            subject: "BRAVO Career Center - 預約申請已收到",
+            content: confirmationContent,
+          });
+        } catch (error) {
+          console.error("[Consultations] Failed to send applicant confirmation email:", error);
+        }
+
+        return { success: true, requestId: created.id, notified, confirmationSent } as const;
       }),
   }),
 });

@@ -65,11 +65,11 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
             {/* Column 1: Logo + About */}
             <div className="lg:col-span-1">
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mb-4 flex items-center gap-1">
                 <img
                   src={consultationLogoUrl}
                   alt="Bravo Career Center Logo"
-                  className="h-12 w-auto"
+                  className="h-16 w-auto"
                 />
                 <div>
                   <p

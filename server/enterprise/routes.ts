@@ -22,10 +22,26 @@ enterpriseRouter.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "GET") {
     const origin = req.get("origin");
-    const expected =
+    const configured = (
       process.env.ENTERPRISE_ORIGIN ||
-      `${process.env.NODE_ENV === "production" || req.secure ? "https" : "http"}://${req.get("host")}`;
-    if (!origin || origin !== expected) {
+      process.env.CORS_ORIGINS ||
+      ""
+    )
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
+    const allowed =
+      process.env.NODE_ENV === "production"
+        ? new Set([
+            "https://bravocareercenter.com",
+            "https://www.bravocareercenter.com",
+            ...configured,
+          ])
+        : new Set([
+            `${req.secure ? "https" : "http"}://${req.get("host")}`,
+            ...configured,
+          ]);
+    if (!origin || !allowed.has(origin)) {
       res.status(403).json({ error: "請從企業平台頁面操作" });
       return;
     }
@@ -79,7 +95,7 @@ enterpriseRouter.post("/login", async (req, res) => {
     res.cookie(cookie, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
       path: "/api/enterprise",
       maxAge: 8 * 3600000,
     });
