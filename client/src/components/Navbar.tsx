@@ -69,7 +69,7 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-8">
           {navItems.map((item) =>
             item.external ? (
               <a
@@ -102,13 +102,14 @@ export default function Navbar() {
             )
           )}
 
-          <button
-            onClick={() => handleNavClick("#contact")}
-            className="font-sans-tc text-sm font-semibold px-5 py-2 rounded-full text-white transition-all duration-200 hover:opacity-90 active:scale-95"
+          <a
+            href="/enterprise/login"
+            onClick={() => setMobileOpen(false)}
+            className="font-sans-tc text-sm font-semibold whitespace-nowrap px-5 py-2 rounded-full text-white transition-all duration-200 hover:opacity-90 active:scale-95"
             style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
           >
-            立即諮詢
-          </button>
+            人才管理｜企業登入
+          </a>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -149,13 +150,14 @@ export default function Navbar() {
                   </button>
                 )
               )}
-              <button
-                onClick={() => handleNavClick("#contact")}
+              <a
+                href="/enterprise/login"
+                onClick={() => setMobileOpen(false)}
                 className="mt-2 font-sans-tc text-sm font-semibold py-3 rounded-full text-white text-center"
                 style={{ backgroundColor: "oklch(0.62 0.15 45)" }}
               >
-                立即諮詢
-              </button>
+                人才管理｜企業登入
+              </a>
             </nav>
           </div>
         )}
