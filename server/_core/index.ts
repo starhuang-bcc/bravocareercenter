@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { enterpriseRouter } from "../enterprise/routes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -37,14 +38,15 @@ async function startServer() {
 
   // 301 Redirect: non-www to www (for SEO canonical URL)
   app.use((req, res, next) => {
-    const host = req.get('host') || '';
-    if (host === 'bravocareercenter.com') {
+    const host = req.get("host") || "";
+    if (host === "bravocareercenter.com") {
       const redirectUrl = `https://www.bravocareercenter.com${req.originalUrl}`;
       return res.redirect(301, redirectUrl);
     }
     next();
   });
 
+  app.use("/api/enterprise", enterpriseRouter);
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
