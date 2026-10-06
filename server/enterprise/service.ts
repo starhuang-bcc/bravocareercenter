@@ -100,7 +100,11 @@ export function mutate(s: Platform, a: Account, op: string, input: unknown) {
         companyId: z.string(),
         name: z.string().trim().min(1).max(100),
         title: z.string().max(150),
-        salary: z.number().positive().max(10000000),
+        salary: z
+          .number()
+          .int("月薪必須為整數")
+          .nonnegative("月薪不得為負數")
+          .max(10000000),
         start: date,
         end: z.union([date, z.literal("")]),
         status: z.enum(["在職", "留停", "離職"]),
