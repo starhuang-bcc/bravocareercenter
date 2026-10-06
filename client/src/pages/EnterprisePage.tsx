@@ -56,7 +56,7 @@ const money = (n: number) =>
   new Intl.NumberFormat("zh-TW", {
     style: "currency",
     currency: "TWD",
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   }).format(n);
 const currentMonth = () =>
   new Intl.DateTimeFormat("sv-SE", {
@@ -81,7 +81,8 @@ export default function EnterprisePage() {
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
-    [tab, setTab] = useState("總覽");
+    [tab, setTab] = useState("總覽"),
+    [editingTalent, setEditingTalent] = useState<Talent | null>(null);
   async function reload() {
     try {
       setState(await api("state"));
@@ -290,6 +291,7 @@ export default function EnterprisePage() {
                         <th>合約期間</th>
                         <th>狀態</th>
                         {admin && <th>月薪</th>}
+                        {admin && <th>操作</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -326,6 +328,21 @@ export default function EnterprisePage() {
                             )}
                           </td>
                           {admin && <td>{money(t.salary)}</td>}
+                          {admin && (
+                            <td>
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => {
+                                  setEditingTalent({ ...t });
+                                  setError("");
+                                  setNotice("");
+                                }}
+                              >
+                                編輯
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -337,8 +354,9 @@ export default function EnterprisePage() {
               </section>
               {admin && (
                 <section className="ep-card">
-                  <h2>新增約聘人才</h2>
+                  <h2>{editingTalent ? "編輯約聘人才" : "新增約聘人才"}</h2>
                   <form
+                    key={editingTalent?.id || "new-talent"}
                     className="ep-grid"
                     onSubmit={async e => {
                       e.preventDefault();
@@ -347,14 +365,24 @@ export default function EnterprisePage() {
                       if (
                         await action("talent", {
                           ...p,
+                          ...(editingTalent ? { id: editingTalent.id } : {}),
                           salary: Number(p.salary),
                         })
-                      )
+                      ) {
+                        setNotice(
+                          editingTalent ? "約聘人才資料已更新" : "已新增人才"
+                        );
+                        setEditingTalent(null);
                         f.reset();
+                      }
                     }}
                   >
                     <Field label="所屬廠商">
-                      <select name="companyId" required>
+                      <select
+                        name="companyId"
+                        defaultValue={editingTalent?.companyId}
+                        required
+                      >
                         {state.companies.map(c => (
                           <option key={c.id} value={c.id}>
                             {c.name}
@@ -363,34 +391,62 @@ export default function EnterprisePage() {
                       </select>
                     </Field>
                     <Field label="姓名">
-                      <input name="name" required />
+                      <input
+                        name="name"
+                        defaultValue={editingTalent?.name}
+                        required
+                      />
                     </Field>
                     <Field label="職稱">
-                      <input name="title" />
+                      <input name="title" defaultValue={editingTalent?.title} />
                     </Field>
                     <Field label="月薪（NT$）">
                       <input
                         type="number"
                         name="salary"
-                        min="1"
-                        step="0.01"
+                        defaultValue={editingTalent?.salary}
+                        min="0"
+                        step="1"
                         required
                       />
                     </Field>
                     <Field label="合約起日">
-                      <input type="date" name="start" required />
+                      <input
+                        type="date"
+                        name="start"
+                        defaultValue={editingTalent?.start}
+                        required
+                      />
                     </Field>
                     <Field label="合約迄日">
-                      <input type="date" name="end" />
+                      <input
+                        type="date"
+                        name="end"
+                        defaultValue={editingTalent?.end}
+                      />
                     </Field>
                     <Field label="狀態">
-                      <select name="status">
+                      <select
+                        name="status"
+                        defaultValue={editingTalent?.status}
+                      >
                         <option>在職</option>
                         <option>留停</option>
                         <option>離職</option>
                       </select>
                     </Field>
-                    <button className="ep-primary">新增人才</button>
+                    <button className="ep-primary" disabled={busy}>
+                      {editingTalent ? "儲存變更" : "新增人才"}
+                    </button>
+                    {editingTalent && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => setEditingTalent(null)}
+                      >
+                        取消
+                      </button>
+                    )}
                   </form>
                 </section>
               )}

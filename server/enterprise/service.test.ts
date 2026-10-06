@@ -211,3 +211,45 @@ describe("payroll and calendar boundaries", () => {
     ).toThrow();
   });
 });
+
+describe("talent edits", () => {
+  it("updates the existing ID, preserves attendance history and supports status changes", () => {
+    const s = fixture();
+    const history = JSON.stringify(s.months);
+    mutate(s, admin, "talent", {
+      ...s.talents[0],
+      name: "B",
+      title: "engineer",
+      salary: 10000,
+    });
+    mutate(s, admin, "talent", {
+      ...s.talents[0],
+      title: "Senior Engineer",
+      salary: 12000,
+      companyId: "c2",
+    });
+    expect(s.talents).toHaveLength(1);
+    expect(s.talents[0]).toMatchObject({
+      id: "t1",
+      title: "Senior Engineer",
+      salary: 12000,
+      companyId: "c2",
+    });
+    mutate(s, admin, "talent", { ...s.talents[0], status: "離職" });
+    const restored = JSON.parse(JSON.stringify(s));
+    expect(restored.talents[0].status).toBe("離職");
+    expect(JSON.stringify(s.months)).toBe(history);
+  });
+  it("accepts zero and rejects fractional or negative salaries and unknown IDs", () => {
+    const s = fixture();
+    const input = { ...s.talents[0] };
+    for (const salary of [-1, 10000.5])
+      expect(() => mutate(s, admin, "talent", { ...input, salary })).toThrow();
+    expect(() =>
+      mutate(s, admin, "talent", { ...input, id: "missing" })
+    ).toThrow("人才不存在");
+    mutate(s, admin, "talent", { ...input, salary: 0 });
+    expect(s.talents[0].salary).toBe(0);
+    expect(s.talents).toHaveLength(1);
+  });
+});
